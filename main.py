@@ -13,7 +13,7 @@ def loadImages( folder_dir : str, extension : str) -> np.ndarray:
         img = cv2.imread(str(i), 1)
         images.append(img)
     images = np.array(images)
-    return images
+    return images,_fileNames
 
 def averageImg(images : np.ndarray) -> np.ndarray:
     w, h, d = images[0].shape
@@ -28,7 +28,6 @@ def wait():
     while (True):
         # Displays the window infinitely
         key = cv2.waitKey(0)
-
         # Shuts down the display window and terminates
         # the Python process when a specific key is
         # pressed on the window.
@@ -44,12 +43,8 @@ if __name__ == '__main__':
     empty = 'Gelabert/1660284000.jpg'
     folder_dir = 'Gelabert'
     extension = '*.jpg'
-    images = loadImages(folder_dir, extension)
+    images, _fileNames = loadImages(folder_dir, extension)
 
     img = averageImg(images)
     cv2.imshow("average",img)
     wait()
-
-
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
