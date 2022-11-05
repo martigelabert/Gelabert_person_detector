@@ -1,0 +1,26 @@
+\documentclass[11pt,twoside,a4paper]{article}
+
+\title{Person Detector}
+\author{Martí Gelabert Gómez}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+
+
+\section{Gabor Filter}
+
+Is a function of various parameters.
+Think as Gabor as a Gaussian filter in 2D.
+
+\begin{equation}
+    filter(x,y;\sigma,\theta,\lambda,\gamma,\phi) = exp [ - \frac{x^2 - \gamma ^2 \cdot y^2}{2 \sigma^2} ] \cdot exp [ i (2 \pi \frac{x}{\lambda} + \phi) ] 
+\end{equation}
+
+The parameters of ksize allows to select the size of our kernel filter, in case we are using a really big shape we will overlook details if the shapes are small. The same reasoning can be applyed with a small filter, may overlook shapes too big for it. Therefore, must be tested with different sizes to reach an idoneal spot, if your features are tiny or bigger, you have to take that in count.
+
+A common practice is to generate a bank of filters by changing the different parameters introduced previously.
+    
+\end{document}

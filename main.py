@@ -2,8 +2,9 @@ import cv2
 import numpy
 import numpy as np
 from pathlib import Path
-#def getImages(path):
+import matplotlib.pyplot as plt
 
+#def getImages(path):
 
 def loadImages( folder_dir : str, extension : str, color = 1) -> np.ndarray:
     images = []
@@ -40,7 +41,8 @@ def wait():
             break
     cv2.destroyAllWindows()
 
-def features_gabor_filter_bank(img):
+def gabor_filter_bank(img):
+    """Generation of diferent Gaborn filters and apply them to a given image"""
     kernels = [
         cv2.getGaborKernel(ksize=(15, 15), sigma=sigma, theta=theta, lambd=lambd, gamma=gamma, psi=0)
         for sigma in [3, 5, 7]
@@ -48,10 +50,18 @@ def features_gabor_filter_bank(img):
         for lambd in [1.5, 2]
         for gamma in [1, 1.5]
     ]
-    filtered_images = [cv2.filter2D(img, cv2.CV_64F, kernel) for kernel in kernels]
 
-    # Create features
-    # X = np.stack([f.flatten() for f in filtered_images], axis=-1)
+    fig = plt.figure(figsize=(10, 12))
+    
+    rows = 5
+    columns = len(kernels)//rows - 1
+    for i in range(1, columns*rows +1):
+        img = kernels[i]
+        fig.add_subplot(rows, columns, i)
+        plt.imshow(img)
+    plt.show()
+
+    filtered_images = [cv2.filter2D(img, cv2.CV_64F, kernel) for kernel in kernels]
     return filtered_images
 
 # Press the green button in the gutter to run the script.
@@ -64,7 +74,7 @@ if __name__ == '__main__':
     avg = averageImg(images)
 
     cv2.imshow("average",images[1])
-    a = features_gabor_filter_bank(images[1])[1]
+    a = gabor_filter_bank(images[1])[1]
     #np.subtract(images[1],avg)
-    cv2.imshow("average",a)
+    cv2.imshow("average",np.subtract(a,avg))
     wait()
