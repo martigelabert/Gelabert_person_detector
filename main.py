@@ -72,10 +72,9 @@ if __name__ == '__main__':
     images, _fileNames = loadImages(folder_dir, extension,0)
 
     avg = averageImg(images)
-    
-    
-    cv2.imshow("average",images[1][0])
-    a = gabor_filter_bank(images[1])[1]
+    cv2.imshow("avg",avg) 
+    #cv2.imshow("average",images[1])
+    #a = gabor_filter_bank(images[1])[1]
     #np.subtract(images[1],avg)
-    cv2.imshow("average",np.subtract(a,avg))
+    #cv2.imshow("average",np.subtract(a,avg))
     wait()
