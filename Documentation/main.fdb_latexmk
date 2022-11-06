@@ -1,7 +1,6 @@
 # Fdb version 3
-["pdflatex"] 1667676181 "/home/marti/Documentos/GitHub/Gelabert_person_detector/Documentation/main.tex" "main.pdf" "main" 1667676181
-  "/etc/texmf/web2c/texmf.cnf" 1667670165 475 c0e671620eb5563b2130f56340a5fde8 ""
-  "/home/marti/Documentos/GitHub/Gelabert_person_detector/Documentation/main.tex" 1667676180 1833 ac6f6a362c3d4bd4d4578bd5cafa2d6c ""
+["pdflatex"] 1667766975 "main.tex" "main.pdf" "main" 1667766975
+  "/etc/texmf/web2c/texmf.cnf" 1667766458 475 c0e671620eb5563b2130f56340a5fde8 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmbx10.tfm" 1136768653 1328 c834bbb027764024c09d3d2bf908b5f0 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmbx12.tfm" 1136768653 1324 c910af8c371558dc20f2d7822f66fe64 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmmi10.tfm" 1136768653 1528 abec98dbc43e172678c11b3b9031252a ""
@@ -38,10 +37,10 @@
   "/usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg" 1279039959 678 4792914a8f45be57bb98413425e4c7af ""
   "/usr/share/texlive/texmf-dist/web2c/texmf.cnf" 1644012257 39432 7155514e09a3d69036fac785183a21c2 ""
   "/usr/share/texmf/web2c/texmf.cnf" 1644012257 39432 7155514e09a3d69036fac785183a21c2 ""
-  "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1667670171 75955 f78456fd1308dc295dc476a68e28d85b ""
-  "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1667670177 1405653 ebab8011bd6c0a57daa1b469a978d543 ""
-  "main.aux" 1667676181 349 f650652db1a05231bf00a8fdc948a02f "pdflatex"
-  "main.tex" 1667676180 1833 ac6f6a362c3d4bd4d4578bd5cafa2d6c ""
+  "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1667766461 75955 f78456fd1308dc295dc476a68e28d85b ""
+  "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1667766463 1405651 ccfd00aa30c8dc6c2c41a473734ee9fd ""
+  "main.aux" 1667766975 349 f650652db1a05231bf00a8fdc948a02f "pdflatex"
+  "main.tex" 1667766974 1713 67a870420d3e00691be6035a613c1672 ""
   (generated)
   "main.aux"
   "main.log"
