@@ -4,8 +4,6 @@ import numpy as np
 from pathlib import Path
 import matplotlib.pyplot as plt
 
-#def getImages(path):
-
 def loadImages( folder_dir : str, extension : str, color = 1) -> np.ndarray:
     images = []
     _fileNames = Path(folder_dir).glob(extension)
