@@ -14,6 +14,8 @@ def loadImages( folder_dir : str, extension : str, color = 1) -> np.ndarray:
     return images,_fileNames
 
 
+# Primer tendria que aplicar una forma de uniformizar todo, usar el clie (histogram equalization) en todas
+# para que sea todo mas uniforme
 def averageImg(images : np.ndarray) -> np.ndarray:
     """"Method for calculating the average between all the images avaliable"""
     # https://leslietj.github.io/2020/06/28/How-to-Average-Images-Using-OpenCV/
@@ -69,7 +71,7 @@ def gabor_filter_bank(image, show=False):
 def substract_all(average:np.ndarray,images:np.ndarray) -> np.ndarray:
     """Substracting the average image from all the images"""
     
-    
+
 
     return np.subtract(images,average)    
 
