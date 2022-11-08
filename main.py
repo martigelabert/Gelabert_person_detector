@@ -68,13 +68,10 @@ def gabor_filter_bank(image, show=False):
 
 def substract_all(average:np.ndarray,images:np.ndarray) -> np.ndarray:
     """Substracting the average image from all the images"""
-    out = []
-
-
-    for img in images:
-        out.append(np.subtract(img,average))
     
-    return np.array(out)    
+    
+
+    return np.subtract(images,average)    
 
 def histogram_equalization(images:np.ndarray)-> np.ndarray:
     """Calculation of histogram equalization using openCV optimized functions"""
@@ -99,10 +96,11 @@ if __name__ == '__main__':
 
     cv2.imshow("average",avg)
     cv2.waitKey(0)
-    #sub = substract_all(images=images,average=avg)
     
-    #cv2.imshow("subs", sub[0])
-    #cv2.waitKey(0)
+    sub = substract_all(images=images,average=avg)
+    
+    cv2.imshow("subs", sub[0])
+    cv2.waitKey(0)
     
     #equ = histogram_equalization(images=images)
 
