@@ -16,16 +16,17 @@ def loadImages( folder_dir : str, extension : str, color = 1) -> np.ndarray:
 
 def averageImg(images : np.ndarray) -> np.ndarray:
     """"Method for calculating the average between all the images avaliable"""
-    print(images.shape)
-    print(images[0].shape)
-    average = np.zeros_like(images[0],np.float64)           
-    
-
-    for img in images:
-        average = average + img 
-    average = np.array(np.round(average), dtype=np.uint8)
-
-    return average
+    # https://leslietj.github.io/2020/06/28/How-to-Average-Images-Using-OpenCV/
+    avg_image = images[0]
+    for i in range(len(images)):
+        if i == 0:
+            pass
+        else:
+            alpha = 1.0/(i + 1)
+            beta = 1.0 - alpha
+            avg_image = cv2.addWeighted(images[i], alpha, avg_image, beta, 0.0)
+    print(avg_image.shape)
+    return avg_image
 
 def wait():
     while (True):
@@ -68,6 +69,8 @@ def gabor_filter_bank(image, show=False):
 def substract_all(average:np.ndarray,images:np.ndarray) -> np.ndarray:
     """Substracting the average image from all the images"""
     out = []
+
+
     for img in images:
         out.append(np.subtract(img,average))
     
@@ -88,13 +91,20 @@ if __name__ == '__main__':
     empty = 'Gelabert/1660284000.jpg'
     folder_dir = 'Gelabert'
     extension = '*.jpg'
-    images, _fileNames = loadImages(folder_dir, extension,0)
-    _empty = cv2.imread(empty,0)
+    images, _fileNames = loadImages(folder_dir, extension,1)
+    _empty = cv2.imread(empty,1)
+    
+    cv2.imshow("original",images[0])
+    avg = averageImg(images)
 
-    avg = averageImg(images=images)
     cv2.imshow("average",avg)
+    cv2.waitKey(0)
     #sub = substract_all(images=images,average=avg)
-    equ = histogram_equalization(images=images)
+    
+    #cv2.imshow("subs", sub[0])
+    #cv2.waitKey(0)
+    
+    #equ = histogram_equalization(images=images)
 
     #cv2.imshow("average",avg)
     #cv2.waitKey(0)
@@ -103,19 +113,19 @@ if __name__ == '__main__':
     #cv2.waitKey(0)
 
     # Expand the whites
-    dil = [
-        cv2.dilate(img, np.ones((5, 5), np.uint8), iterations=1)
+    #dil = [
+    #    cv2.dilate(img, np.ones((5, 5), np.uint8), iterations=1)
         #cv2.erode(img, np.ones((5, 5), np.uint8), iterations=1)
-        for img in equ
-    ]
+    #    for img in sub
+    #]
 
     # 32 is clean
-    f = gabor_filter_bank(dil[0])
-    f = np.array(f)
+    #f = gabor_filter_bank(dil[0])
+    #f = np.array(f)
 
-    for i in range(len(f)):
-        print("Filter n",i)
-        cv2.imshow("a",f[i])
-        cv2.waitKey(0)
+    #for i in range(len(f)):
+    #    print("Filter n",i)
+    #    cv2.imshow("a",f[i])
+    #    cv2.waitKey(0)
 
         
