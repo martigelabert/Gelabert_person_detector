@@ -1,0 +1,4 @@
+CHECKS : 
+- the filters works better direct on the images
+- the equalization smudges the image and makes perform worst
+- vertical filtering looks like something promising

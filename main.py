@@ -50,7 +50,6 @@ def gabor_filter_bank(image, show=False):
         for gamma in [1, 1.5]
     ]
 
-
     if show:
         fig = plt.figure(figsize=(10, 12))
         
@@ -92,63 +91,31 @@ if __name__ == '__main__':
     images, _fileNames = loadImages(folder_dir, extension,0)
     _empty = cv2.imread(empty,0)
 
-
     avg = averageImg(images=images)
-    sub = substract_all(images=images,average=avg)
-    equ = histogram_equalization(images=sub)
-
-  
     cv2.imshow("average",avg)
-    cv2.waitKey(0)
+    #sub = substract_all(images=images,average=avg)
+    equ = histogram_equalization(images=images)
 
-    cv2.imshow("sub",sub[0])
-    cv2.waitKey(0)
+    #cv2.imshow("average",avg)
+    #cv2.waitKey(0)
 
-    f = gabor_filter_bank(equ[0])
-    f = np.array(f)
+    #cv2.imshow("sub",sub[0])
+    #cv2.waitKey(0)
 
+    # Expand the whites
     dil = [
         cv2.dilate(img, np.ones((5, 5), np.uint8), iterations=1)
+        #cv2.erode(img, np.ones((5, 5), np.uint8), iterations=1)
         for img in equ
     ]
 
-    for i in range(len(dil)):
-        print("Filter n",i)
-        cv2.imshow("a",dil[i])
-        cv2.waitKey(0)
-
-
+    # 32 is clean
+    f = gabor_filter_bank(dil[0])
+    f = np.array(f)
 
     for i in range(len(f)):
         print("Filter n",i)
         cv2.imshow("a",f[i])
         cv2.waitKey(0)
-    
-    # Generating Average Images 
-    #avg = averageImg(images)
-    #subs = substract_all(images=images,average=avg)
-
-
-
-    #check_side_by_side(img1=images[0],img2=np.subtract(subs[0],_empty))    
-
-    #cv2.imshow("empty",np.subtract(_empty,images[0]))
-    #test = np.subtract(_empty,images[0]) 
-    #equ = cv2.equalizeHist(test)
-
-    #check_side_by_side(images[0],avg)
-
-
-    # Now we have every frame minus the average 
-    #substrations = substract_all(images=avg,average=images)
-
-    #filtered = gabor_filter_bank(images) 
-    #equ = histogram_equalization(images)
-
-    #cv2.imshow("equ",equ[0])
-    #check_side_by_side(equ[0],images[0])
-    #wait()
-    #a = gabor_filter_bank(images[1])[1]
-
 
         
