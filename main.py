@@ -127,12 +127,28 @@ def Method01(folder_dir, extension):
     sub = [cv2.subtract(avg, equ) for equ in images_equ]
     
     cv2.imshow("Method 1, sub", sub[0])
-    bin = [cv2.threshold(s, 100, 255, cv2.THRESH_BINARY)[1]
+    bin = [cv2.threshold(s, 180, 255, cv2.THRESH_BINARY)[1]
         for s in sub]
     
-    dil = [cv2.dilate(b, np.ones((3, 3), np.uint8), iterations=1)for b in bin]
-     
+    dil = [cv2.dilate(b, np.ones((5, 5), np.uint8), iterations=1)for b in bin]
+    
+    # here we have the contours of multiple images
+    contours_images = [cv2.findContours(d, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)[0] for d in dil]
     cv2.imshow("Method 1, dil", dil[0])
+    
+    img_det = []
+    for i in range(len(contours_images)):
+        img = images[i]
+        for c in contours_images[i]:
+            x,y,w,h = cv2.boundingRect(c)
+            img = cv2.rectangle(img,(x,y),(x+w,y+h),(0,0,255),2)
+        img_det.append(img)
+   
+    for i in range(len(img_det)):
+        cv2.imshow("out",img_det[i])
+        cv2.waitKey(0)
+        
+
 
 # TODO : Check this web https://answers.opencv.org/question/230058/opencv-background-subtraction-get-color-objects-python/
 
