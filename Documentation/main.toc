@@ -1,0 +1,9 @@
+\contentsline {section}{\numberline {1}Introduction}{1}{}%
+\contentsline {section}{\numberline {2}Method 1}{1}{}%
+\contentsline {section}{\numberline {3}Method 2}{2}{}%
+\contentsline {section}{\numberline {4}Preprocessing}{2}{}%
+\contentsline {section}{\numberline {5}Background Removal}{2}{}%
+\contentsline {subsubsection}{\numberline {5.0.1}Image Averaging}{2}{}%
+\contentsline {subsubsection}{\numberline {5.0.2}Image Substraction}{2}{}%
+\contentsline {section}{\numberline {6}Gabor Filter}{2}{}%
+\contentsline {section}{\numberline {7}What form do the People have?}{3}{}%

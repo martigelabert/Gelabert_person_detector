@@ -12,21 +12,57 @@
 
 \usepackage{graphicx}
 
-\title{Person Detector}
+\title{An implementation for person detection* : A quick review of how computer vision algorithm can perform withouth AI
+}
 \author{Martí Gelabert Gómez}
 \date{\today}
 
 \begin{document}
 \maketitle
+\tableofcontents
+
 
 \section{Introduction}
+
+
+
+
+\section{Method 1}
+\begin{enumerate}
+\item Import images as black and white.
+\item Apply Histogram equalization to the images.
+\item Generate an image from the averaging from all the images we have already with the Histogram equalization already applyed.
+\item Substract the background to the images using the average image.
+\item Apply a thresholding algorithm to binarize the image.
+\item Apply a dilation operation into the binarized images to expand the whites.
+\item Use a contour algorithm to extract the diferent regions containing persons.
+\end{enumerate}
+
+\section{Method 2}
+\begin{enumerate}
+\item Import images in color.
+\item Generate an image from the averaging from all the images we have.
+\item Substract the background to the images using the average image.
+\item Apply a thresholding algorithm to binarize the image.
+\item Apply a dilation operation into the binarized images to expand the whites.
+\item Use a contour algorithm to extract the diferent regions containing persons.
+\end{enumerate}
+
 
 
 \section{Preprocessing}
 
 
 % Check spell
+\section{Background Removal} 
+Background removal is a process that allows the programmer to remove the background from the image, this way, the result image with this process allows a better binarization of the image.
+
+
+
+
 \subsubsection{Image Averaging}
+
+
 
 \subsubsection{Image Substraction}
 %In the areas where there is a person, at the time of applying the image substraction, we will be  

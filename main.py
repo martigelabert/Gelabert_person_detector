@@ -127,11 +127,11 @@ def Method01(folder_dir, extension):
     sub = [cv2.subtract(avg, equ) for equ in images_equ]
     
     cv2.imshow("Method 1, sub", sub[0])
-    bin = [cv2.threshold(s, 180, 255, cv2.THRESH_BINARY)[1]
+    bin = [cv2.threshold(s, 160, 255, cv2.THRESH_BINARY)[1]
         for s in sub]
     
     dil = [cv2.dilate(b, np.ones((5, 5), np.uint8), iterations=1)for b in bin]
-    
+     
     # here we have the contours of multiple images
     contours_images = [cv2.findContours(d, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)[0] for d in dil]
     cv2.imshow("Method 1, dil", dil[0])
@@ -145,7 +145,14 @@ def Method01(folder_dir, extension):
         img_det.append(img)
    
     for i in range(len(img_det)):
-        cv2.imshow("out",img_det[i])
+        scale_percent = 60 # percent of original size
+        width = int(img.shape[1] * scale_percent / 100)
+        height = int(img.shape[0] * scale_percent / 100)
+        dim = (width, height)
+    
+        # resize image
+        resized = cv2.resize(img_det[i], dim, interpolation = cv2.INTER_AREA)
+        cv2.imshow("out",resized)
         cv2.waitKey(0)
         
 
@@ -200,6 +207,7 @@ if __name__ == '__main__':
     cv2.imwrite("test/2imagen_average.png", avg)
     cv2.imwrite("test/3imagen_sub.png", sub[0])
     cv2.imwrite("test/4imagen_bin.png", bin[0])
+    
     
     # equ = histogram_equalization(images=images)
     cv2.waitKey(0)
