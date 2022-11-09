@@ -127,7 +127,12 @@ def Method01(folder_dir, extension):
     sub = [cv2.subtract(avg, equ) for equ in images_equ]
     
     cv2.imshow("Method 1, sub", sub[0])
-
+    bin = [cv2.threshold(s, 100, 255, cv2.THRESH_BINARY)[1]
+        for s in sub]
+    
+    dil = [cv2.dilate(b, np.ones((3, 3), np.uint8), iterations=1)for b in bin]
+     
+    cv2.imshow("Method 1, dil", dil[0])
 
 # TODO : Check this web https://answers.opencv.org/question/230058/opencv-background-subtraction-get-color-objects-python/
 
