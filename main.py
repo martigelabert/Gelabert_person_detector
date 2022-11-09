@@ -17,16 +17,17 @@ def loadImages( folder_dir : str, extension : str, color = 1) -> np.ndarray:
 
 def averageImg(images : np.ndarray) -> np.ndarray:
     """"Method for calculating the average between all the images avaliable"""
-    print(images.shape)
-    print(images[0].shape)
-    average = np.zeros_like(images[0],np.float64)           
-    
+   
+    avg_image = images[0]
+    for i in range(len(images)):
+        if i == 0:
+            pass
+        else:
+            alpha = 1.0/(i + 1)
+            beta = 1.0 - alpha
+            avg_image = cv2.addWeighted(images[i], alpha, avg_image, beta, 0.0)
 
-    for img in images:
-        average = average + img 
-    average = np.array(np.round(average), dtype=np.uint8)
-
-    return average
+    return avg_image
 
 
 def wait():
@@ -95,8 +96,9 @@ def histogram_equalization(images: np.ndarray) -> np.ndarray:
 
 
 def check_side_by_side(img1, img2):
-    res = np.hstack((img1,img2)) #stacking images side-by-side
-    cv2.imshow('res.png',res)
+    res = np.hstack((img1, img2))
+    # stacking images side-by-side
+    cv2.imshow('res.png', res)
 
 
 # Press the green button in the gutter to run the script.
