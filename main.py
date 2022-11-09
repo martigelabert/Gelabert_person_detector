@@ -126,13 +126,19 @@ if __name__ == '__main__':
     sub = substract_all(images=images, average=avg)
 
     sub_gray = [cv2.cvtColor(s, cv2.COLOR_BGR2GRAY) for s in sub]    
-   
-    bin = [cv2.threshold(gray, 125, 255, cv2.THRESH_BINARY)[1]
+  
+    # TODO : Improve the binarization and check the normalization
+    # what I should do?
+
+    # Maybe Check the two
+    #
+
+    bin = [cv2.threshold(gray, 100, 255, cv2.THRESH_BINARY)[1]
             for gray in sub_gray]
-    
 
+    # Remeberb this is with dilate applyed...
+    cv2.imshow("bin with dilation applyed",  cv2.dilate(bin[0], np.ones((5, 5), np.uint8), iterations=1))
 
-    cv2.imshow("bin", bin[0])
 
     
     cv2.waitKey(0)
