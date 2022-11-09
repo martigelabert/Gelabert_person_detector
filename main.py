@@ -12,17 +12,17 @@ def loadImages( folder_dir : str, extension : str, color = 1) -> np.ndarray:
         img = cv2.imread(str(i), color)
         images.append(img)
     images = np.array(images)
-    return images,_fileNames
+    return images, _fileNames
 
 
-def averageImg(images : np.ndarray) -> np.ndarray:
+def averageImg(images : np.ndarray) -> np.ndarray : 
     """"Method for calculating the average between all the images avaliable"""
    
     avg_image = images[0]
     for i in range(len(images)):
         if i == 0:
             pass
-        else:
+        else: 
             alpha = 1.0/(i + 1)
             beta = 1.0 - alpha
             avg_image = cv2.addWeighted(images[i], alpha, avg_image, beta, 0.0)
@@ -47,7 +47,9 @@ def wait():
 def gabor_filter_bank(image, show=False):
     """Generation of diferent Gaborn filters and apply them to a given image"""
     kernels = [
-        cv2.getGaborKernel(ksize=(15, 15), sigma=sigma, theta=theta, lambd=lambd, gamma=gamma, psi=0)
+        cv2.getGaborKernel(ksize=(15, 15), sigma=sigma, theta=theta, 
+            lambd=lambd, gamma=gamma, psi=0)
+
         for sigma in [3, 5, 7]
         for theta in [np.pi, np.pi / 2, 0]
         for lambd in [1.5, 2]
@@ -59,7 +61,7 @@ def gabor_filter_bank(image, show=False):
         
         rows = 5
         columns = len(kernels)//rows - 1
-        for i in range(1, columns*rows +1):
+        for i in range(1, columns*rows + 1):
             img = kernels[i]
             fig.add_subplot(rows, columns, i)
             plt.imshow(img)
@@ -103,6 +105,33 @@ def check_side_by_side(img1, img2):
     cv2.imshow('res.png', res)
 
 
+def Method01(folder_dir, extension):
+    """Method01 where the image processing is done in black and white"""
+    images, _fileNames = loadImages(folder_dir, extension, 0)
+
+    # Applying Histogram Equalization, this way the iluminations
+    # between the images will be more consistent.
+    images_equ = [cv2.equalizeHist(img) for img in images] 
+
+    # Image Averaging
+    avg = images_equ[0]
+    for i in range(len(images_equ)):
+        if i == 0:
+            pass
+        else:
+            alpha = 1.0/(i + 1)
+            beta = 1.0 - alpha
+            avg = cv2.addWeighted(images_equ[i], alpha, avg, beta, 0.0)
+    
+    # substraction
+    sub = [cv2.subtract(avg, equ) for equ in images_equ]
+    
+    cv2.imshow("Method 1, sub", sub[0])
+
+
+# TODO : Check this web https://answers.opencv.org/question/230058/opencv-background-subtraction-get-color-objects-python/
+
+
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     empty = 'Gelabert/1660284000.jpg'
@@ -112,7 +141,9 @@ if __name__ == '__main__':
 
     images, _fileNames = loadImages(folder_dir, extension, cv2.IMREAD_COLOR)
     _empty = cv2.imread(empty, cv2.IMREAD_COLOR)
- 
+
+    Method01(folder_dir, extension)
+    
     # TODO: How I do an histogram equalization if I need to work
     # with the color images to not loose a lot of information?
 
@@ -121,9 +152,12 @@ if __name__ == '__main__':
     # Therefore, we need to execute equalizeHist to make
     # everything more uniform
     avg = averageImg(images=images)
+    
     cv2.imshow("average", avg)
     
     sub = substract_all(images=images, average=avg)
+
+    
 
     sub_gray = [cv2.cvtColor(s, cv2.COLOR_BGR2GRAY) for s in sub]    
   
@@ -134,16 +168,20 @@ if __name__ == '__main__':
     #
 
     bin = [cv2.threshold(gray, 100, 255, cv2.THRESH_BINARY)[1]
-            for gray in sub_gray]
+        for gray in sub_gray]
+    
+    cv2.imshow("binarized image", bin[0])
 
     # Remeberb this is with dilate applyed...
-    cv2.imshow("bin with dilation applyed",  cv2.dilate(bin[0], np.ones((5, 5), np.uint8), iterations=1))
-
-
+    # cv2.imshow("bin with dilation applyed",  cv2.dilate(bin[0], np.ones((5, 5), np.uint8), iterations=1))
     
-    cv2.waitKey(0)
+    cv2.imwrite("test/1imagen_original.png", images[0])
+    cv2.imwrite("test/2imagen_average.png", avg)
+    cv2.imwrite("test/3imagen_sub.png", sub[0])
+    cv2.imwrite("test/4imagen_bin.png", bin[0])
+    
     # equ = histogram_equalization(images=images)
-
+    cv2.waitKey(0)
     ############################################
 
     # cv2.imshow("average",avg)
