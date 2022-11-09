@@ -3,6 +3,7 @@ import numpy as np
 from pathlib import Path
 import matplotlib.pyplot as plt
 
+
 def loadImages( folder_dir : str, extension : str, color = 1) -> np.ndarray:
     images = []
     _fileNames = Path(folder_dir).glob(extension)
@@ -14,21 +15,19 @@ def loadImages( folder_dir : str, extension : str, color = 1) -> np.ndarray:
     return images,_fileNames
 
 
-# Primer tendria que aplicar una forma de uniformizar todo, usar el clie (histogram equalization) en todas
-# para que sea todo mas uniforme
 def averageImg(images : np.ndarray) -> np.ndarray:
     """"Method for calculating the average between all the images avaliable"""
-    # https://leslietj.github.io/2020/06/28/How-to-Average-Images-Using-OpenCV/
-    avg_image = images[0]
-    for i in range(len(images)):
-        if i == 0:
-            pass
-        else:
-            alpha = 1.0/(i + 1)
-            beta = 1.0 - alpha
-            avg_image = cv2.addWeighted(images[i], alpha, avg_image, beta, 0.0)
-    print(avg_image.shape)
-    return avg_image
+    print(images.shape)
+    print(images[0].shape)
+    average = np.zeros_like(images[0],np.float64)           
+    
+
+    for img in images:
+        average = average + img 
+    average = np.array(np.round(average), dtype=np.uint8)
+
+    return average
+
 
 def wait():
     while (True):
@@ -42,6 +41,7 @@ def wait():
         if key == 27 or key == 113:
             break
     cv2.destroyAllWindows()
+
 
 def gabor_filter_bank(image, show=False):
     """Generation of diferent Gaborn filters and apply them to a given image"""
@@ -68,64 +68,84 @@ def gabor_filter_bank(image, show=False):
     filtered_images = [cv2.filter2D(image, cv2.CV_64F, kernel) for kernel in kernels]
     return filtered_images
 
-def substract_all(average:np.ndarray,images:np.ndarray) -> np.ndarray:
+
+def substract_all(average: np.ndarray, images: np.ndarray) -> np.ndarray:
     """Substracting the average image from all the images"""
+        
+    # We will need to transform to LAB, this way we will have
+    # a better representation of the substraction than
+    # the RGB simple one (loose of information)
     
+    labs = [cv2.cvtColor(img, cv2.COLOR_BGR2Lab) for img in images]
+    avg_lab = cv2.cvtColor(average, cv2.COLOR_BGR2Lab)
+    
+    print('Conversion OK')
+
+    subs = [np.subtract(lab, avg_lab) for lab in labs]
+
+    return  [cv2.cvtColor(img, cv2.COLOR_Lab2BGR) for img in subs]
 
 
-    return np.subtract(images,average)    
-
-def histogram_equalization(images:np.ndarray)-> np.ndarray:
+def histogram_equalization(images: np.ndarray) -> np.ndarray:
     """Calculation of histogram equalization using openCV optimized functions"""
     output = []
     for img in images:
         output.append( cv2.equalizeHist(img))
     return np.array(output)
 
-def check_side_by_side(img1,img2):
+
+def check_side_by_side(img1, img2):
     res = np.hstack((img1,img2)) #stacking images side-by-side
     cv2.imshow('res.png',res)
+
+
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     empty = 'Gelabert/1660284000.jpg'
     folder_dir = 'Gelabert'
     extension = '*.jpg'
-    images, _fileNames = loadImages(folder_dir, extension,1)
-    _empty = cv2.imread(empty,1)
-    
-    cv2.imshow("original",images[0])
-    avg = averageImg(images)
+    # Load the images with color or not.
 
-    cv2.imshow("average",avg)
+    images, _fileNames = loadImages(folder_dir, extension, 1)
+    _empty = cv2.imread(empty, 1)
+ 
+    # TODO: How I do an histogram equalization if I need to work
+    # with the color images to not loose a lot of information?
+
+    # We need the iluminations of the images to be uniform
+    # this way we will be able to substract the background
+    # Therefore, we need to execute equalizeHist to make
+    # everything more uniform
+    avg = averageImg(images=images)
+    cv2.imshow("average", avg)
+    
+    sub = substract_all(images=images, average=avg)
+    cv2.imshow("substraction", sub[0])
     cv2.waitKey(0)
-    
-    sub = substract_all(images=images,average=avg)
-    
-    cv2.imshow("subs", sub[0])
-    cv2.waitKey(0)
-    
-    #equ = histogram_equalization(images=images)
+    # equ = histogram_equalization(images=images)
 
-    #cv2.imshow("average",avg)
-    #cv2.waitKey(0)
+    ############################################
 
-    #cv2.imshow("sub",sub[0])
-    #cv2.waitKey(0)
+    # cv2.imshow("average",avg)
+    # cv2.waitKey(0)
+
+    # cv2.imshow("sub",sub[0])
+    # cv2.waitKey(0)
 
     # Expand the whites
-    #dil = [
+    # dil = [
     #    cv2.dilate(img, np.ones((5, 5), np.uint8), iterations=1)
-        #cv2.erode(img, np.ones((5, 5), np.uint8), iterations=1)
-    #    for img in sub
-    #]
+        # cv2.erode(img, np.ones((5, 5), np.uint8), iterations=1)
+    #    for img in equ
+    # ]
 
     # 32 is clean
-    #f = gabor_filter_bank(dil[0])
-    #f = np.array(f)
+    # f = gabor_filter_bank(dil[0])
+    # f = np.array(f)
 
-    #for i in range(len(f)):
-    #    print("Filter n",i)
-    #    cv2.imshow("a",f[i])
+    # for i in range(len(f)):
+    #    print("Filter n", i)
+    #    cv2.imshow("a", f[i])
     #    cv2.waitKey(0)
 
         
