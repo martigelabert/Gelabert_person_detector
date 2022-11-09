@@ -82,9 +82,11 @@ def substract_all(average: np.ndarray, images: np.ndarray) -> np.ndarray:
     
     print('Conversion OK')
 
-    subs = [np.subtract(lab, avg_lab) for lab in labs]
+    # This way the persons are more whity
+    subs = [cv2.subtract(avg_lab, lab) for lab in labs]
 
-    return  [cv2.cvtColor(img, cv2.COLOR_Lab2BGR) for img in subs]
+    # It is normal to get this blueish color ?
+    return [cv2.cvtColor(img, cv2.COLOR_Lab2BGR) for img in subs]
 
 
 def histogram_equalization(images: np.ndarray) -> np.ndarray:
@@ -108,8 +110,8 @@ if __name__ == '__main__':
     extension = '*.jpg'
     # Load the images with color or not.
 
-    images, _fileNames = loadImages(folder_dir, extension, 1)
-    _empty = cv2.imread(empty, 1)
+    images, _fileNames = loadImages(folder_dir, extension, cv2.IMREAD_COLOR)
+    _empty = cv2.imread(empty, cv2.IMREAD_COLOR)
  
     # TODO: How I do an histogram equalization if I need to work
     # with the color images to not loose a lot of information?
@@ -122,7 +124,17 @@ if __name__ == '__main__':
     cv2.imshow("average", avg)
     
     sub = substract_all(images=images, average=avg)
-    cv2.imshow("substraction", sub[0])
+
+    sub_gray = [cv2.cvtColor(s, cv2.COLOR_BGR2GRAY) for s in sub]    
+   
+    bin = [cv2.threshold(gray, 125, 255, cv2.THRESH_BINARY)[1]
+            for gray in sub_gray]
+    
+
+
+    cv2.imshow("bin", bin[0])
+
+    
     cv2.waitKey(0)
     # equ = histogram_equalization(images=images)
 
