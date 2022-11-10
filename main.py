@@ -154,7 +154,18 @@ def Method01(folder_dir, extension):
         resized = cv2.resize(img_det[i], dim, interpolation = cv2.INTER_AREA)
         cv2.imshow("out",resized)
         cv2.waitKey(0)
-        
+
+def scale(img):
+    scale_percent = 60 # percent of original size
+    width = int(img.shape[1] * scale_percent / 100)
+    height = int(img.shape[0] * scale_percent / 100)
+    dim = (width, height)
+  
+    # resize image
+    return cv2.resize(img, dim, interpolation = cv2.INTER_AREA)
+ 
+
+
 def Method02(folder_dir, extension):
     """Method02 where the image processing is done in color"""
     # the alpha channel is dropped
@@ -163,8 +174,7 @@ def Method02(folder_dir, extension):
     # Conversion to LAB
     images_lab = [cv2.cvtColor(im, cv2.COLOR_BGR2LAB) for im in images]
     
-    im_equ = []
-    
+    im_equ = [] 
     # Aplication of histogram equalization on L
     for im in images_lab:
         L, A, B = cv2.split(im)
@@ -190,14 +200,17 @@ def Method02(folder_dir, extension):
     # blur with gaussian kernels, need odd ksize
     avg =  cv2.GaussianBlur(avg, (17, 17), 0)
     avg_gray = cv2.cvtColor(cv2.cvtColor(np.uint8(avg), cv2.COLOR_LAB2BGR), cv2.COLOR_BGR2GRAY)
-   
+    
+    #cv2.imshow("avg gaussian applyed method 2", scale(avg_gray))
+    cv2.imshow("equalized img", cv2.cvtColor(np.uint8(im_equ[0]), cv2.COLOR_LAB2BGR))
+
     # This is now on uint8
     # cv2.imshow("LAB avg_gray", avg_gray) 
     #print(avg_gray.dtype)  
     
-    print(np.uint8(im_equ[0].shape))
-    a = cv2.cvtColor(np.int(im_equ[0]), cv2.COLOR_LAB2BGR)
-    cv2.imshow("aaa",np.uint8(a))
+ #   print(np.uint8(im_equ[0].shape))
+ #   a = cv2.cvtColor(np.int(im_equ[0]), cv2.COLOR_LAB2BGR)
+ #   cv2.imshow("aaa",np.uint8(a))
 
     #general  = [ cv2.cvtColor(cv2.cvtColor(img, cv2.COLOR_LAB2BGR), cv2.COLOR_BGR2GRAY) 
     #        for img in im_equ]
@@ -239,8 +252,8 @@ if __name__ == '__main__':
     # Therefore, we need to execute equalizeHist to make
     # everything more uniform
     avg = averageImg(images=images)
-    
-    cv2.imshow("average", avg)
+    # desmarcar
+    #cv2.imshow("average", avg)
     
     sub = substract_all(images=images, average=avg)
 
@@ -257,7 +270,8 @@ if __name__ == '__main__':
     bin = [cv2.threshold(gray, 100, 255, cv2.THRESH_BINARY)[1]
         for gray in sub_gray]
     
-    cv2.imshow("binarized image", bin[0])
+    # desmarcar
+    #cv2.imshow("binarized image", bin[0])
 
     # Remeberb this is with dilate applyed...
     # cv2.imshow("bin with dilation applyed",  cv2.dilate(bin[0], np.ones((5, 5), np.uint8), iterations=1))
