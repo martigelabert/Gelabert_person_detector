@@ -157,12 +157,14 @@ def Method01(folder_dir, extension):
         
 def Method02(folder_dir, extension):
     """Method02 where the image processing is done in color"""
+    # the alpha channel is dropped
     images, _fileNames = loadImages(folder_dir, extension, 1)
 
     # Conversion to LAB
     images_lab = [cv2.cvtColor(im, cv2.COLOR_BGR2LAB) for im in images]
     
     im_equ = []
+    
     # Aplication of histogram equalization on L
     for im in images_lab:
         L, A, B = cv2.split(im)
@@ -172,7 +174,7 @@ def Method02(folder_dir, extension):
     
     # Conversion to avoid overflow
     im_equ = np.float64(im_equ)
-   
+     
     avg = im_equ[0]
     for i in range(len(im_equ)):
         if i == 0:
@@ -184,12 +186,36 @@ def Method02(folder_dir, extension):
  
     # https://stackoverflow.com/questions/35668074/how-i-can-take-the-average-of-100-image-using-opencv
     # cv2.imshow("method2 avg", cv2.cvtColor(np.uint8(avg),cv2.COLOR_LAB2BGR))
+    
+    # blur with gaussian kernels, need odd ksize
+    avg =  cv2.GaussianBlur(avg, (17, 17), 0)
+    avg_gray = cv2.cvtColor(cv2.cvtColor(np.uint8(avg), cv2.COLOR_LAB2BGR), cv2.COLOR_BGR2GRAY)
+   
+    # This is now on uint8
+    # cv2.imshow("LAB avg_gray", avg_gray) 
+    #print(avg_gray.dtype)  
+    
+    print(np.uint8(im_equ[0].shape))
+    a = cv2.cvtColor(np.int(im_equ[0]), cv2.COLOR_LAB2BGR)
+    cv2.imshow("aaa",np.uint8(a))
 
-    # smuthering with gaussian kernels
-    avg =  cv2.GaussianBlur(avg,(17,17),0)
-
-    cv2.imshow("method2 avg", cv2.cvtColor(np.uint8(avg),cv2.COLOR_LAB2BGR))
-
+    #general  = [ cv2.cvtColor(cv2.cvtColor(img, cv2.COLOR_LAB2BGR), cv2.COLOR_BGR2GRAY) 
+    #        for img in im_equ]
+     
+    #cv2.imshow("LAB general", general[0])
+    
+    # cv2.imshow("method2 avg", cv2.cvtColor(np.uint8(avg),cv2.COLOR_LAB2BGR))
+   
+    # Conversion to gray
+    # avg_gray = cv2.cvtColor(cv2.cvtColor(np.uint8(avg), cv2.COLOR_LAB2BGR), cv2.COLOR_BGR2GRAY)
+    # im_equ_gray  = [ cv2.cvtColor(cv2.cvtColor(np.uint8(im), cv2.COLOR_LAB2BGR), cv2.COLOR_BGR2GRAY) for im in im_equ]
+   
+    
+    # substraction
+    # sub = [cv2.subtract( im, avg_gray) for im in im_equ_gray]
+    
+    # cv2.imshow("method2 sub", im_equ[0])
+    
 # TODO : Check this web https://answers.opencv.org/question/230058/opencv-background-subtraction-get-color-objects-python/
 
 
