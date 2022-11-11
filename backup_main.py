@@ -108,32 +108,27 @@ def check_side_by_side(img1, img2):
 def Method01(folder_dir, extension):
     """Method01 where the image processing is done in black and white"""
     images, _fileNames = loadImages(folder_dir, extension, 0)
-    
-    clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
+
     # Applying Histogram Equalization, this way the iluminations
     # between the images will be more consistent.
-    images_equ = [clahe.apply(img) for img in images] 
+    images_equ = [cv2.equalizeHist(img) for img in images] 
 
     # Image Averaging
-    avg = images_equ[0].astype(np.float64)
-   
+    avg = images_equ[0]
     for i in range(len(images_equ)):
         if i == 0:
             pass
         else:
-            avg += images_equ[i].astype(np.float64) 
+            alpha = 1.0/(i + 1)
+            beta = 1.0 - alpha
+            avg = cv2.addWeighted(images_equ[i], alpha, avg, beta, 0.0)
     
-    avg = avg/len(images_equ)
-    avg = avg.astype(np.uint8)
- 
-    # blur with gaussian kernels, need odd ksize
-    avg =  cv2.GaussianBlur(avg, (17, 17), 0)
-  
     # substraction
     sub = [cv2.subtract(avg, equ) for equ in images_equ]
     
     cv2.imshow("Method 1, sub", sub[0])
-    bin = [cv2.threshold(s, 127, 255, cv2.THRESH_BINARY)[1] for s in sub]
+    bin = [cv2.threshold(s, 160, 255, cv2.THRESH_BINARY)[1]
+        for s in sub]
     
     dil = [cv2.dilate(b, np.ones((5, 5), np.uint8), iterations=1)for b in bin]
      
@@ -160,7 +155,22 @@ def Method01(folder_dir, extension):
         cv2.imshow("out",resized)
         cv2.waitKey(0)
        
+
+
 # https://stackoverflow.com/questions/46689428/convert-np-array-of-type-float64-to-type-uint8-scaling-values
+
+
+def float64_2_uint8(data):
+    """Method to convert from float64 to uint8 normalizing values"""
+    info = np.finfo(data.dtype) # Get the information of the incoming image type
+    data = data.astype(np.float64) / info.max # normalize the data to 0 - 1
+    data = 255 * data # Now scale by 255
+    img = data.astype(np.uint8)
+    return img
+
+
+       
+
 def scale(img):
     scale_percent = 60 # percent of original size
     width = int(img.shape[1] * scale_percent / 100)
@@ -170,6 +180,20 @@ def scale(img):
     # resize image
     return cv2.resize(img, dim, interpolation = cv2.INTER_AREA)
  
+
+def Method03(folder_dir, extension):
+    images, _fileNames = loadImages(folder_dir=folder_dir, extension=extension)
+
+    # Conversion to LAB uint8
+    images_LAB = [cv2.cvtColor(im, cv2.COLOR_BGR2LAB) for im in images]
+    
+    
+    for im in images_LAB:
+        L,A,B = cv2.split(im)
+        # equalizaeHist uses uint type 
+        L_equ = cv2.equalizeHist(L)
+
+
 def Method02(folder_dir, extension):
     """Method02 where the image processing is done in color"""
     # the alpha channel is dropped
@@ -178,15 +202,19 @@ def Method02(folder_dir, extension):
     # Conversion to LAB
     images_lab = [cv2.cvtColor(im, cv2.COLOR_BGR2LAB) for im in images]
 
-    # create a CLAHE object (Arguments are optional).
-    clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
-    
-    for i in range(len(images_lab)): 
-        images_lab[i][:, :, 0] = clahe.apply(images_lab[i][:, :, 0])
+    for i in range(len(images_lab)):
+        images_lab[i][:, :, 0] = cv2.equalizeHist(images_lab[i][:, :, 0])
 
     print(images_lab[0].dtype) 
     im_equ = images_lab
-       
+    # Aplication of histogram equalization on L
+    #for im in images_lab:
+    #    L, A, B = cv2.split(im)
+        # CLAHE emplear
+    #    L_equ = cv2.equalizeHist(L)
+    #    _im = cv2.merge((L_equ, A, B))
+    #    im_equ.append(_im)
+    
     # Conversion to avoid overflow
     im_equ = np.float64(im_equ)
      
@@ -206,16 +234,58 @@ def Method02(folder_dir, extension):
     avg =  cv2.GaussianBlur(avg, (17, 17), 0)
     cv2.imshow("method2 avg", cv2.cvtColor(np.uint8(avg),cv2.COLOR_LAB2BGR))
         
-    avg_gr   = cv2.cvtColor(cv2.cvtColor(np.uint8(avg), cv2.COLOR_LAB2LBGR), cv2.COLOR_BGR2GRAY)  
-    im_gray  = [cv2.cvtColor(cv2.cvtColor(np.uint8(im), cv2.COLOR_LAB2LBGR), cv2.COLOR_BGR2GRAY) for im in im_equ]  
-   
+    # substraction
+    sub = [cv2.subtract( im, avg) for im in im_equ]
+    
+
+    # dilation gets the maximum from a serie of chromations
+
+#    avg_gray = cv2.cvtColor(cv2.cvtColor(np.uint8(avg), cv2.COLOR_LAB2BGR), cv2.COLOR_BGR2GRAY)
+    
+    #cv2.imshow("avg gaussian applyed method 2", scale(avg_gray))
+    cv2.imshow("equalized img", cv2.cvtColor(np.uint8(im_equ[0]), cv2.COLOR_LAB2BGR))
+
+
+
+    # This is now on uint8
+    #cv2.imshow("LAB avg_gray", avg_gray) 
+    # print(avg_gray.dtype)  
+    
+    #general  = [ cv2.cvtColor(cv2.cvtColor(img, cv2.COLOR_LAB2BGR), cv2.COLOR_BGR2GRAY) for img in im_equ] 
+ #   print(np.uint8(im_equ[0].shape))
+ #   a = cv2.cvtColor(np.int(im_equ[0]), cv2.COLOR_LAB2BGR)
+ #   cv2.imshow("aaa",np.uint8(a))
+
+    #avg_gray = np.float64(avg_gray)
+    
+    #cv2.imshow("general", general[0])
+    #general = np.float64(general)
+
     
 
     # substraction
-    #sub = [cv2.subtract( im, avg_gr) for im in im_gray]
-    cv2.imshow("method2 sub",im_gray[0])
-     
+    #sub = [cv2.subtract(avg_gray.astype(np.float64), im.astype(np.float64)) for im in general]
+    
+    #sub_int = [float64_2_uint8(s) for s in sub]
+
+    #cv2.imshow("subtraction", sub[0])
+
+
+    #a = cv2.cvtColor(np.int(im_equ[0]), cv2.COLOR_LAB2BGR)
+    # cv2.imshow("aaa",np.uint8(sub[0]))
+
+    
+    #cv2.imshow("LAB general", general[0])
+    
+    # cv2.imshow("method2 avg", cv2.cvtColor(np.uint8(avg),cv2.COLOR_LAB2BGR))
    
+    # Conversion to gray
+    # avg_gray = cv2.cvtColor(cv2.cvtColor(np.uint8(avg), cv2.COLOR_LAB2BGR), cv2.COLOR_BGR2GRAY)
+    # im_equ_gray  = [ cv2.cvtColor(cv2.cvtColor(np.uint8(im), cv2.COLOR_LAB2BGR), cv2.COLOR_BGR2GRAY) for im in im_equ]
+   
+   
+    # cv2.imshow("method2 sub", im_equ[0])
+    
 # TODO : Check this web https://answers.opencv.org/question/230058/opencv-background-subtraction-get-color-objects-python/
 
 
@@ -229,7 +299,7 @@ if __name__ == '__main__':
     images, _fileNames = loadImages(folder_dir, extension, cv2.IMREAD_COLOR)
     _empty = cv2.imread(empty, cv2.IMREAD_COLOR)
 
-    Method01(folder_dir, extension)
+    Method02(folder_dir, extension)
     
     # TODO: How I do an histogram equalization if I need to work
     # with the color images to not loose a lot of information?
