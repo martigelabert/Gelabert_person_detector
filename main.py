@@ -170,6 +170,30 @@ def float64_2_uint8(data):
 
 
        
+
+def scale(img):
+    scale_percent = 60 # percent of original size
+    width = int(img.shape[1] * scale_percent / 100)
+    height = int(img.shape[0] * scale_percent / 100)
+    dim = (width, height)
+  
+    # resize image
+    return cv2.resize(img, dim, interpolation = cv2.INTER_AREA)
+ 
+
+def Method03(folder_dir, extension):
+    images, _fileNames = loadImages(folder_dir=folder_dir, extension=extension)
+
+    # Conversion to LAB uint8
+    images_LAB = [cv2.cvtColor(im, cv2.COLOR_BGR2LAB) for im in images]
+    
+    
+    for im in images_LAB:
+        L,A,B = cv2.split(im)
+        # equalizaeHist uses uint type 
+        L_equ = cv2.equalizeHist(L)
+
+
 def Method02(folder_dir, extension):
     """Method02 where the image processing is done in color"""
     # the alpha channel is dropped
@@ -177,21 +201,24 @@ def Method02(folder_dir, extension):
 
     # Conversion to LAB
     images_lab = [cv2.cvtColor(im, cv2.COLOR_BGR2LAB) for im in images]
-    
-    im_equ = []
-    
-    # Aplication of histogram equalization on L
-    # All operations are in uint8 because equalizeHist use it
-    for im in images_lab:
-        L, A, B = cv2.split(im)
 
-        L_equ = cv2.equalizeHist(L)
-        
-        _im = cv2.merge((L_equ, A, B))
-        im_equ.append(_im)
-  
-    # Conversion to float64 to avoid overflow
-    avg = im_equ[0].astype(np.float64)
+    for i in range(len(images_lab)):
+        images_lab[i][:, :, 0] = cv2.equalizeHist(images_lab[i][:, :, 0])
+
+    print(images_lab[0].dtype) 
+    im_equ = images_lab
+    # Aplication of histogram equalization on L
+    #for im in images_lab:
+    #    L, A, B = cv2.split(im)
+        # CLAHE emplear
+    #    L_equ = cv2.equalizeHist(L)
+    #    _im = cv2.merge((L_equ, A, B))
+    #    im_equ.append(_im)
+    
+    # Conversion to avoid overflow
+    im_equ = np.float64(im_equ)
+     
+    avg = im_equ[0]
     for i in range(len(im_equ)):
         if i == 0:
             pass
@@ -204,15 +231,30 @@ def Method02(folder_dir, extension):
     # cv2.imshow("method2 avg", cv2.cvtColor(np.uint8(avg),cv2.COLOR_LAB2BGR))
     
     # blur with gaussian kernels, need odd ksize
-    avg =  cv2.GaussianBlur(avg, (5, 5), 0)
-    # This conversion is correct
-    avg_gray = cv2.cvtColor(cv2.cvtColor(np.uint8(avg), cv2.COLOR_LAB2BGR), cv2.COLOR_BGR2GRAY) 
+    avg =  cv2.GaussianBlur(avg, (17, 17), 0)
+    cv2.imshow("method2 avg", cv2.cvtColor(np.uint8(avg),cv2.COLOR_LAB2BGR))
+        
+    # substraction
+    sub = [cv2.subtract( im, avg) for im in im_equ]
+    
+
+    # dilation gets the maximum from a serie of chromations
+
+#    avg_gray = cv2.cvtColor(cv2.cvtColor(np.uint8(avg), cv2.COLOR_LAB2BGR), cv2.COLOR_BGR2GRAY)
+    
+    #cv2.imshow("avg gaussian applyed method 2", scale(avg_gray))
+    cv2.imshow("equalized img", cv2.cvtColor(np.uint8(im_equ[0]), cv2.COLOR_LAB2BGR))
+
+
 
     # This is now on uint8
     cv2.imshow("LAB avg_gray", avg_gray) 
     # print(avg_gray.dtype)  
     
     general  = [ cv2.cvtColor(cv2.cvtColor(img, cv2.COLOR_LAB2BGR), cv2.COLOR_BGR2GRAY) for img in im_equ] 
+ #   print(np.uint8(im_equ[0].shape))
+ #   a = cv2.cvtColor(np.int(im_equ[0]), cv2.COLOR_LAB2BGR)
+ #   cv2.imshow("aaa",np.uint8(a))
 
     avg_gray = np.float64(avg_gray)
     
@@ -267,8 +309,8 @@ if __name__ == '__main__':
     # Therefore, we need to execute equalizeHist to make
     # everything more uniform
     avg = averageImg(images=images)
-    
-    cv2.imshow("average", avg)
+    # desmarcar
+    #cv2.imshow("average", avg)
     
     sub = substract_all(images=images, average=avg)
 
@@ -285,7 +327,8 @@ if __name__ == '__main__':
     bin = [cv2.threshold(gray, 100, 255, cv2.THRESH_BINARY)[1]
         for gray in sub_gray]
     
-    cv2.imshow("binarized image", bin[0])
+    # desmarcar
+    #cv2.imshow("binarized image", bin[0])
 
     # Remeberb this is with dilate applyed...
     # cv2.imshow("bin with dilation applyed",  cv2.dilate(bin[0], np.ones((5, 5), np.uint8), iterations=1))
