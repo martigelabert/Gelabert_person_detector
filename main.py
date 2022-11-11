@@ -176,9 +176,6 @@ def Method03(folder_dir, extension):
         L,A,B = cv2.split(im)
         # equalizaeHist uses uint type 
         L_equ = cv2.equalizeHist(L)
-                    
-
-
 
 
 def Method02(folder_dir, extension):
@@ -188,14 +185,19 @@ def Method02(folder_dir, extension):
 
     # Conversion to LAB
     images_lab = [cv2.cvtColor(im, cv2.COLOR_BGR2LAB) for im in images]
-    
-    im_equ = [] 
+
+    for i in range(len(images_lab)):
+        images_lab[i][:, :, 0] = cv2.equalizeHist(images_lab[i][:, :, 0])
+
+    print(images_lab[0].dtype) 
+    im_equ = images_lab
     # Aplication of histogram equalization on L
-    for im in images_lab:
-        L, A, B = cv2.split(im)
-        L_equ = cv2.equalizeHist(L)
-        _im = cv2.merge((L_equ, A, B))
-        im_equ.append(_im)
+    #for im in images_lab:
+    #    L, A, B = cv2.split(im)
+        # CLAHE emplear
+    #    L_equ = cv2.equalizeHist(L)
+    #    _im = cv2.merge((L_equ, A, B))
+    #    im_equ.append(_im)
     
     # Conversion to avoid overflow
     im_equ = np.float64(im_equ)
@@ -214,10 +216,20 @@ def Method02(folder_dir, extension):
     
     # blur with gaussian kernels, need odd ksize
     avg =  cv2.GaussianBlur(avg, (17, 17), 0)
-    avg_gray = cv2.cvtColor(cv2.cvtColor(np.uint8(avg), cv2.COLOR_LAB2BGR), cv2.COLOR_BGR2GRAY)
+    cv2.imshow("method2 avg", cv2.cvtColor(np.uint8(avg),cv2.COLOR_LAB2BGR))
+        
+    # substraction
+    sub = [cv2.subtract( im, avg) for im in im_equ]
+    
+
+    # dilation gets the maximum from a serie of chromations
+
+#    avg_gray = cv2.cvtColor(cv2.cvtColor(np.uint8(avg), cv2.COLOR_LAB2BGR), cv2.COLOR_BGR2GRAY)
     
     #cv2.imshow("avg gaussian applyed method 2", scale(avg_gray))
     cv2.imshow("equalized img", cv2.cvtColor(np.uint8(im_equ[0]), cv2.COLOR_LAB2BGR))
+
+
 
     # This is now on uint8
     # cv2.imshow("LAB avg_gray", avg_gray) 
