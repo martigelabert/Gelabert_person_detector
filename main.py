@@ -165,6 +165,21 @@ def scale(img):
     return cv2.resize(img, dim, interpolation = cv2.INTER_AREA)
  
 
+def Method03(folder_dir, extension):
+    images, _fileNames = loadImages(folder_dir=folder_dir, extension=extension)
+
+    # Conversion to LAB uint8
+    images_LAB = [cv2.cvtColor(im, cv2.COLOR_BGR2LAB) for im in images]
+    
+    
+    for im in images_LAB:
+        L,A,B = cv2.split(im)
+        # equalizaeHist uses uint type 
+        L_equ = cv2.equalizeHist(L)
+                    
+
+
+
 
 def Method02(folder_dir, extension):
     """Method02 where the image processing is done in color"""
