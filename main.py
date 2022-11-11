@@ -154,7 +154,22 @@ def Method01(folder_dir, extension):
         resized = cv2.resize(img_det[i], dim, interpolation = cv2.INTER_AREA)
         cv2.imshow("out",resized)
         cv2.waitKey(0)
-        
+       
+
+
+# https://stackoverflow.com/questions/46689428/convert-np-array-of-type-float64-to-type-uint8-scaling-values
+
+
+def float64_2_uint8(data):
+    """Method to convert from float64 to uint8 normalizing values"""
+    info = np.finfo(data.dtype) # Get the information of the incoming image type
+    data = data.astype(np.float64) / info.max # normalize the data to 0 - 1
+    data = 255 * data # Now scale by 255
+    img = data.astype(np.uint8)
+    return img
+
+
+       
 def Method02(folder_dir, extension):
     """Method02 where the image processing is done in color"""
     # the alpha channel is dropped
@@ -166,21 +181,22 @@ def Method02(folder_dir, extension):
     im_equ = []
     
     # Aplication of histogram equalization on L
+    # All operations are in uint8 because equalizeHist use it
     for im in images_lab:
         L, A, B = cv2.split(im)
+
         L_equ = cv2.equalizeHist(L)
+        
         _im = cv2.merge((L_equ, A, B))
         im_equ.append(_im)
-    
-    # Conversion to avoid overflow
-    im_equ = np.float64(im_equ)
-     
-    avg = im_equ[0]
+  
+    # Conversion to float64 to avoid overflow
+    avg = im_equ[0].astype(np.float64)
     for i in range(len(im_equ)):
         if i == 0:
             pass
         else:
-            avg += im_equ[i]
+            avg += im_equ[i].astype(np.float64) 
     
     avg = avg/len(im_equ)
  
@@ -188,20 +204,35 @@ def Method02(folder_dir, extension):
     # cv2.imshow("method2 avg", cv2.cvtColor(np.uint8(avg),cv2.COLOR_LAB2BGR))
     
     # blur with gaussian kernels, need odd ksize
-    avg =  cv2.GaussianBlur(avg, (17, 17), 0)
-    avg_gray = cv2.cvtColor(cv2.cvtColor(np.uint8(avg), cv2.COLOR_LAB2BGR), cv2.COLOR_BGR2GRAY)
-   
-    # This is now on uint8
-    # cv2.imshow("LAB avg_gray", avg_gray) 
-    #print(avg_gray.dtype)  
-    
-    print(np.uint8(im_equ[0].shape))
-    a = cv2.cvtColor(np.int(im_equ[0]), cv2.COLOR_LAB2BGR)
-    cv2.imshow("aaa",np.uint8(a))
+    avg =  cv2.GaussianBlur(avg, (5, 5), 0)
+    # This conversion is correct
+    avg_gray = cv2.cvtColor(cv2.cvtColor(np.uint8(avg), cv2.COLOR_LAB2BGR), cv2.COLOR_BGR2GRAY) 
 
-    #general  = [ cv2.cvtColor(cv2.cvtColor(img, cv2.COLOR_LAB2BGR), cv2.COLOR_BGR2GRAY) 
-    #        for img in im_equ]
-     
+    # This is now on uint8
+    cv2.imshow("LAB avg_gray", avg_gray) 
+    # print(avg_gray.dtype)  
+    
+    general  = [ cv2.cvtColor(cv2.cvtColor(img, cv2.COLOR_LAB2BGR), cv2.COLOR_BGR2GRAY) for img in im_equ] 
+
+    avg_gray = np.float64(avg_gray)
+    
+    cv2.imshow("general", general[0])
+    #general = np.float64(general)
+
+    
+
+    # substraction
+    sub = [cv2.subtract(avg_gray.astype(np.float64), im.astype(np.float64)) for im in general]
+    
+    sub_int = [float64_2_uint8(s) for s in sub]
+
+    cv2.imshow("subtraction", sub[0])
+
+
+    #a = cv2.cvtColor(np.int(im_equ[0]), cv2.COLOR_LAB2BGR)
+    # cv2.imshow("aaa",np.uint8(sub[0]))
+
+    
     #cv2.imshow("LAB general", general[0])
     
     # cv2.imshow("method2 avg", cv2.cvtColor(np.uint8(avg),cv2.COLOR_LAB2BGR))
@@ -210,10 +241,7 @@ def Method02(folder_dir, extension):
     # avg_gray = cv2.cvtColor(cv2.cvtColor(np.uint8(avg), cv2.COLOR_LAB2BGR), cv2.COLOR_BGR2GRAY)
     # im_equ_gray  = [ cv2.cvtColor(cv2.cvtColor(np.uint8(im), cv2.COLOR_LAB2BGR), cv2.COLOR_BGR2GRAY) for im in im_equ]
    
-    
-    # substraction
-    # sub = [cv2.subtract( im, avg_gray) for im in im_equ_gray]
-    
+   
     # cv2.imshow("method2 sub", im_equ[0])
     
 # TODO : Check this web https://answers.opencv.org/question/230058/opencv-background-subtraction-get-color-objects-python/
