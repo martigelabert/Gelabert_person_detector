@@ -90,12 +90,13 @@ if __name__ == '__main__':
     # bin = [cv2.threshold(s, 127, 255, cv2.THRESH_BINARY)[1] for s in sub]
     bin = [cv2.threshold(s, 127, 255, cv2.THRESH_BINARY)[1] for s in sub]
 
-    mask = cv2.imread('mask.png', 0) / 255
-    cv2.imshow("a", mask)
+    # Aplication of a binary mask to the already binarized images
+    mask = cv2.imread('mask.png', 0) / 255.0
+
     mask = mask.astype(np.uint8)
     bin = [cv2.bitwise_and(b, b, mask=mask) for b in bin]
 
-    dil = [cv2.dilate(b, np.ones((5, 5), np.uint8), iterations=1)
+    dil = [cv2.dilate(b, np.ones((1, 1), np.uint8), iterations=1)
            for b in bin]
 
     wimgs(sub, _fileNames, 'gen/sub')
@@ -140,7 +141,7 @@ if __name__ == '__main__':
         dictionary.update(x)
 
     for i in range(len(images)):
-        plt.rcParams["figure.figsize"] = (30, 20)
+        plt.rcParams["figure.figsize"] = (25, 20)
         fig, axs = plt.subplots(rows, cols)
 
         axs[0, 0].imshow(resize(images[i]), cmap='gray')
