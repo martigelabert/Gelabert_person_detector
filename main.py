@@ -131,14 +131,12 @@ if __name__ == '__main__':
         det.append(det_frame)  # Set of coordenates split by frame
         img_det.append(img)  # images
 
-
-
     # loading the labels for the images
     df = pd.read_csv('final_labels_gelabert_person_counter.csv',
                      names=['Class', 'X', 'Y', 'filename',
                             'img_w', 'img_h'])
     
-    #for i in df.groupby('filename').indices:
+    # for i in df.groupby('filename').indices:
     #    print(df.groupby('filename').indices[i])
 
     rows = 2
@@ -153,10 +151,12 @@ if __name__ == '__main__':
              #   'detection_img': img_det[i],
              # 'det_bbox': det[i],
              'num_det': len(det[i]),
-             'real_det': len(df.groupby('filename').indices[_fileNames[i].split('/')[1]])
+             'real_det': len(df.groupby('filename').indices[_fileNames[i]
+                             .split('/')[1]])
             }
         info.append(x)
 
+    # TODO : Print the dots from the csv to the each corresponding image 
     for i in range(len(images)):
         for d in det[i]:
             img_det[i] = cv2.circle(img_det[i], (d[0], d[1]), 1,
@@ -179,7 +179,8 @@ if __name__ == '__main__':
             axs[1, 0].set_title("cv2.substract(avg,original_image)")
             axs[1, 0].sharex(axs[0, 0])
 
-            axs[0, 1].imshow(resize(cv2.cvtColor(img_det[i], cv2.COLOR_BGR2RGB)))
+            axs[0, 1].imshow(resize(cv2.cvtColor(img_det[i], 
+                                    cv2.COLOR_BGR2RGB)))
             axs[0, 1].set_title("detections")
 
             axs[1, 1].imshow(resize(avg), cmap='gray')
