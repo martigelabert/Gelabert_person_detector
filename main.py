@@ -3,7 +3,6 @@ import numpy as np
 from pathlib import Path
 import matplotlib.pyplot as plt
 import pandas as pd
-import glob
 
 
 def loadImages(folder_dir: str, extension: str, color=1) -> np.ndarray:
@@ -60,7 +59,7 @@ if __name__ == '__main__':
         if i == 0:
             pass
         else:
-            avg += images_equ[i].astype(np.float64) 
+            avg += images_equ[i].astype(np.float64)
     
     avg = avg/len(images_equ)
     avg = avg.astype(np.uint8)
@@ -105,9 +104,19 @@ if __name__ == '__main__':
         
     dictionary = {}
     for i in range(len(images)):
-       
+        x = {
+             'name': _fileNames[i],
+             #   'original': images[i],
+             #   'substracted': sub[i],
+             #   'detection_img': img_det[i],
+             'det_bbox': det[i]
+            }
+        dictionary.update(x)
+
+    for i in range(len(images)):
+        plt.rcParams["figure.figsize"] = (10, 10)
         fig, axs = plt.subplots(rows, cols)
-        
+                
         axs[0, 0].imshow(resize(images[i]), cmap='gray')
         axs[0, 0].set_title("original image")
         
@@ -122,15 +131,6 @@ if __name__ == '__main__':
         axs[1, 1].set_title("average image")
         fig.tight_layout()
         plt.show()
-
-        x = {
-             'name': _fileNames[i],
-             #   'original': images[i],
-             #   'substracted': sub[i],
-             #   'detection_img': img_det[i],
-             'det_bbox': det[i]
-            }
-        dictionary.update(x)
 
 
 
