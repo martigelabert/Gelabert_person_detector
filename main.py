@@ -68,7 +68,8 @@ if __name__ == '__main__':
 
     # Load the images in gray scale.
     images, _fileNames = loadImages(folder_dir, extension, 0)
-    images_color, _ = loadImages(folder_dir, extension, 1)
+    images_color, _ = loadImages(folder_dir, extension, 1)  # For the output plot
+    _empty = cv2.imread('Gelabert/1660284000.jpg', 0)
 
     # We need the iluminations of the images to be uniform
     # this way we will be able to substract the background
@@ -92,13 +93,20 @@ if __name__ == '__main__':
     avg = avg.astype(np.uint8)
 
     # blur with gaussian kernels, need odd ksize
-    avg = cv2.GaussianBlur(avg, (17, 17), 0)
+    # avg = cv2.GaussianBlur(avg, (17, 17), 0)
+    # Using the empty image we obtain better results
+    avg = cv2.GaussianBlur(_empty, (15, 15), 0)
 
     # substraction between avg and the images with CLAHE applyed
     sub = [cv2.subtract(avg, equ) for equ in images_equ]
+    sub = [cv2.erode(b, np.ones((1, 1), np.uint8), iterations=1)
+           for b in sub]
 
     # cv2.imshow("Method 1, sub", sub[0])
-    bin = [cv2.threshold(s, 127, 255, cv2.THRESH_BINARY)[1] for s in sub]
+    # bin = [cv2.threshold(s, 127, 255, cv2.THRESH_BINARY)[1] for s in sub]
+    bin = [cv2.threshold(s, 100, 255, cv2.THRESH_BINARY)[1] for s in sub]
+    # bin = [cv2.threshold(s, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)[1]
+    #       for s in sub]
 
     # Aplication of a binary mask to the already binarized images
     mask = cv2.imread('mask.png', 0) / 255.0
@@ -135,7 +143,7 @@ if __name__ == '__main__':
     df = pd.read_csv('final_labels_gelabert_person_counter.csv',
                      names=['Class', 'X', 'Y', 'filename',
                             'img_w', 'img_h'])
-    
+
     # for i in df.groupby('filename').indices:
     #    print(df.groupby('filename').indices[i])
 
@@ -191,5 +199,5 @@ if __name__ == '__main__':
         for i in range(len(images)):
             accuracy += (info[i]['num_det'] - info[i]['real_det'])**2
 
+    cv2.imwrite("gen/avg_blur.png", avg)
     print("Accuracy = ", accuracy / len(images))
-    

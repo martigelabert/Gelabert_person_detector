@@ -8,54 +8,63 @@
     %Material for the oral presentation (slides), which should focus on the process: what decisions were taken and why, which strengths/shortcomings were found, and a critical discussions of the results.
 
 %https://en.wikibooks.org/wiki/LaTeX/Document_Structure
-\documentclass[11pt,twoside,a4paper]{article}
-
+\documentclass[11pt]{article}
+%\documentclass[10pt,twoside,a4paper]{article}
 \usepackage{graphicx}
-
-\title{An implementation for person detection* : A quick review of how computer vision algorithm can perform withouth AI
-}
-\author{Martí Gelabert Gómez}
-\date{\today}
+\usepackage[a4paper]{geometry}
+\geometry{verbose,tmargin=3cm}
+\usepackage[colorlinks = true,
+            linkcolor = blue,
+            urlcolor  = blue,
+            citecolor = blue,
+            anchorcolor = blue]{hyperref}
 
 \begin{document}
+
+\title{A simple detector for crowd counting using OpenCV and Python}
+\author{Martí Gelabert Gómez}
+\date{\today}
 \maketitle
+
 \tableofcontents
 
-
 \section{Introduction}
+The assignment consists in \textbf{counting} the number of people that appear on the given images. There was not an stablished way to aproach this problem. In this case I have taken the decision of using the computer vision algorithms seen in class and not relay on deep learning or any kind of artificial inteligence algorithm. This is because not by de amount of data needed for training, due to there are really god datasets out there, like MS COCO, but because of the effort of building a good performing detector architecture. Use an already set framework as YOLO or Mask-RCNN would be the way to accomplish the task, but I would be thinking about it as "cheating". Therefore, this way, using the content seen in class, I will be more cautious about my decisions and It will be much easier to justify them.\\
 
+In the following document  we will be focusing on the process taken and the algorithms used, their implementation, their behebeours we obtained and their performance.        
 
+\section{procedure}
+The program takes the following steps :
 
-
-\section{Method 1}
 \begin{enumerate}
-\item Import images as black and white.
-\item Apply Histogram equalization to the images.
-\item Generate an image from the averaging from all the images we have already with the Histogram equalization already applyed.
-\item Substract the background to the images using the average image.
-\item Apply a thresholding algorithm to binarize the image.
-\item Apply a dilation operation into the binarized images to expand the whites.
-\item Use a contour algorithm to extract the diferent regions containing persons.
-\end{enumerate}
+    \item Import images as black and white.
+    \item Apply Histogram equalization to the images.
+    \item Generate an image from the averaging from all the images we have with the Histogram equalization already applyed.
+    \item Substract the background to the images using the average image.
+    \item Apply a thresholding algorithm to binarize the image.
+    \item Apply a dilation operation into the binarized images to expand the whites.
+    \item Use a contour algorithm to extract the diferent regions containing persons.
+    \item Obtain the bounding boxes from these regions.
+    \item Count them and compare the number of detections to the real cuantity.
+    \end{enumerate}
+    
+% \section{Method 2}
+% \begin{enumerate}
+% \item Import images in color.
+% \item Generate an image from the averaging from all the images we have.
+% \item Substract the background to the images using the average image.
+% \item Apply a thresholding algorithm to binarize the image.
+% \item Apply a dilation operation into the binarized images to expand the whites.
+% \item Use a contour algorithm to extract the diferent regions containing persons.
+% \end{enumerate}
 
-\section{Method 2}
-\begin{enumerate}
-\item Import images in color.
-\item Generate an image from the averaging from all the images we have.
-\item Substract the background to the images using the average image.
-\item Apply a thresholding algorithm to binarize the image.
-\item Apply a dilation operation into the binarized images to expand the whites.
-\item Use a contour algorithm to extract the diferent regions containing persons.
-\end{enumerate}
 
-
-
-\section{Preprocessing}
-
+\section{algorithms}
+In this section we will discuss the algorithms selected and the output we obtain from them in the application of our problem.
 
 % Check spell
-\section{Background Removal} 
-Background removal is a process that allows the programmer to remove the background from the image, this way, the result image with this process allows a better binarization of the image.
+\subsection{Background Removal} 
+Background removal is a technique that allows to remove the background from the image, this way, the output will be only the foreground in the form of a binarized image.
 
 
 
