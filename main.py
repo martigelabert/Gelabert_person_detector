@@ -104,9 +104,9 @@ if __name__ == '__main__':
 
     # cv2.imshow("Method 1, sub", sub[0])
     # bin = [cv2.threshold(s, 127, 255, cv2.THRESH_BINARY)[1] for s in sub]
-    bin = [cv2.threshold(s, 100, 255, cv2.THRESH_BINARY)[1] for s in sub]
-    # bin = [cv2.threshold(s, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)[1]
-    #       for s in sub]
+    # bin = [cv2.threshold(s, 100, 255, cv2.THRESH_BINARY)[1] for s in sub]
+    bin = [cv2.threshold(s, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)[1]
+           for s in sub]
 
     # Aplication of a binary mask to the already binarized images
     mask = cv2.imread('mask.png', 0) / 255.0

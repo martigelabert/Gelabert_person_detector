@@ -12,6 +12,8 @@
 %\documentclass[10pt,twoside,a4paper]{article}
 \usepackage{graphicx}
 \usepackage[a4paper]{geometry}
+\usepackage{subcaption}
+\usepackage{comment}
 \geometry{verbose,tmargin=3cm}
 \usepackage[colorlinks = true,
             linkcolor = blue,
@@ -67,7 +69,32 @@ In this section we will discuss the algorithms selected and the output we obtain
 Background removal is a technique that allows to remove the background from the image, this way, the output will be only the foreground in the form of a binarized image.
 
 
+THRESH\_OTSU funciona bien salvo en los casos donde empieza a haber sompras en la imagen, a la hora de aplicar el thresholding obtendremos un número muy grande de falsos positivos en las pequeñas montaás que hace la arena, las dimensionas que tienen son similares a las de una cabeza humana por lo que si las eliminasemos estariamos eliminando buenas deteccionas.
 
+\begin{comment}
+    \begin{figure}
+        \begin{subfigure}[b]{0.3\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{img/OTSU_sub_arena.jpg}
+            \caption{Image substracting the empty beach image}
+            \label{fig:y equals x}
+        \end{subfigure}
+
+        \begin{subfigure}[b]{0.3\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{img/OTSU_sub_arena.jpg}
+            \caption{sub}
+            \label{fig:y equals x}
+        \end{subfigure}
+    \end{figure}
+\end{comment}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{img/OTSU_sub_arena.jpg}
+    \caption{Binarized image using OTSU and the empty beach image}
+    \label{fig:y equals x}
+\end{figure}
 
 \subsubsection{Image Averaging}
 
@@ -75,7 +102,6 @@ Background removal is a technique that allows to remove the background from the 
 
 \subsubsection{Image Substraction}
 %In the areas where there is a person, at the time of applying the image substraction, we will be  
-
 
 
 \section{Gabor Filter}
