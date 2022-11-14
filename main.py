@@ -23,12 +23,6 @@ def loadImages(folder_dir: str, extension: str, color=1) -> np.ndarray:
     return images, names
 
 
-def check_side_by_side(img1, img2):
-    res = np.hstack((img1, img2))
-    # stacking images side-by-side
-    cv2.imshow('res.png', res)
-
-
 def resize(img):
     scale_percent = 60  # percent of original size
     width = int(img.shape[1] * scale_percent / 100)
@@ -55,8 +49,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='A simple program for person '
                                      + 'detectection and crowd counting in '
                                      + 'beautiful pictures!')
-    parser.add_argument('-p', '--plot', type=bool, default=False, 
-                        help='Plot the results with matplotlib at the end of the execution')
+    parser.add_argument('-p', '--plot', type=bool, default=False,
+                        help='Plot the results with matplotlib at the end'
+                              + 'of the execution')
     parser.add_argument('-f', '--folder', type=str, default='Gelabert',
                         required=False, help='Custom path to the images')
     parser.add_argument('-e', '--extension', type=str, default='*.jpg',
@@ -68,7 +63,8 @@ if __name__ == '__main__':
 
     # Load the images in gray scale.
     images, _fileNames = loadImages(folder_dir, extension, 0)
-    images_color, _ = loadImages(folder_dir, extension, 1)  # For the output plot
+    # For the output plot
+    images_color, _ = loadImages(folder_dir, extension, 1)
     _empty = cv2.imread('Gelabert/1660284000.jpg', 0)
 
     # We need the iluminations of the images to be uniform
@@ -104,9 +100,9 @@ if __name__ == '__main__':
 
     # cv2.imshow("Method 1, sub", sub[0])
     # bin = [cv2.threshold(s, 127, 255, cv2.THRESH_BINARY)[1] for s in sub]
-    # bin = [cv2.threshold(s, 100, 255, cv2.THRESH_BINARY)[1] for s in sub]
-    bin = [cv2.threshold(s, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)[1]
-           for s in sub]
+    bin = [cv2.threshold(s, 100, 255, cv2.THRESH_BINARY)[1] for s in sub]
+    # bin = [cv2.threshold(s, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)[1]
+    #       for s in sub]
 
     # Aplication of a binary mask to the already binarized images
     mask = cv2.imread('mask.png', 0) / 255.0
@@ -164,19 +160,20 @@ if __name__ == '__main__':
             }
         info.append(x)
 
-    # TODO : Print the dots from the csv to the each corresponding image 
-    for i in range(len(images)):
-        for d in det[i]:
-            img_det[i] = cv2.circle(img_det[i], (d[0], d[1]), 1,
-                                    (255, 0, 0), 1)
+    for index, row in df.iterrows():
+        img_det[_fileNames.index('Gelabert/'+str(row['filename']))
+                ] = cv2.circle(img_det[_fileNames.index('Gelabert/'
+                                                        + str(row['filename']))
+                                       ], (int(row['X']), int(row['Y'])),
+                               1, (255, 0, 0), 3)
 
-    accuracy = 0.0
+    MAE = 0.0
 
     if parser.parse_args().plot:
         for i in range(len(images)):
             print("File -> ", info[i], " | ", info[i]['num_det'], " of ",
                   info[i]['real_det'])
-            accuracy += (info[i]['num_det'] - info[i]['real_det'])**2
+            MAE += abs((info[i]['num_det'] - info[i]['real_det']))
             plt.rcParams["figure.figsize"] = (15, 15)
             fig, axs = plt.subplots(rows, cols)
 
@@ -197,7 +194,7 @@ if __name__ == '__main__':
             plt.show()
     else:
         for i in range(len(images)):
-            accuracy += (info[i]['num_det'] - info[i]['real_det'])**2
+            MAE += abs((info[i]['num_det'] - info[i]['real_det']))
 
     cv2.imwrite("gen/avg_blur.png", avg)
-    print("Accuracy = ", accuracy / len(images))
+    print("MAE = ", MAE / len(images))
