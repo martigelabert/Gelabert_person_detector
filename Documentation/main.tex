@@ -8,18 +8,30 @@
     %Material for the oral presentation (slides), which should focus on the process: what decisions were taken and why, which strengths/shortcomings were found, and a critical discussions of the results.
 
 %https://en.wikibooks.org/wiki/LaTeX/Document_Structure
-\documentclass[11pt]{article}
+\documentclass[10pt]{article}
 %\documentclass[10pt,twoside,a4paper]{article}
 \usepackage{graphicx}
 \usepackage[a4paper]{geometry}
 \usepackage{subcaption}
 \usepackage{comment}
-\geometry{verbose,tmargin=3cm}
+\geometry{verbose,tmargin=3cm, hmargin=2cm}
 \usepackage[colorlinks = true,
             linkcolor = blue,
             urlcolor  = blue,
             citecolor = blue,
             anchorcolor = blue]{hyperref}
+\usepackage{xcolor}
+\usepackage{listings}
+
+\usepackage{xparse}
+
+\NewDocumentCommand{\codeword}{v}{%
+\texttt{\textcolor{black}{#1}}%
+}
+
+\lstset{language=Python,keywordstyle={\bfseries \color{blue}}}
+
+
 
 \begin{document}
 
@@ -40,9 +52,10 @@ The program takes the following steps :
 
 \begin{enumerate}
     \item Import images as black and white.
-    \item Apply Histogram equalization to the images.
-    \item Generate an image from the averaging from all the images we have with the Histogram equalization already applyed.
-    \item Substract the background to the images using the average image.
+    \item Apply Adaptative Histogram equalization to the images.
+    %\item Generate an image from the averaging from all the images we have with the Histogram equalization already applyed.
+    \item Substract the background to the images using the image with the background.
+    \item Apply an erosion algorithm to obtain small highlighted areas.
     \item Apply a thresholding algorithm to binarize the image.
     \item Apply a dilation operation into the binarized images to expand the whites.
     \item Use a contour algorithm to extract the diferent regions containing persons.
@@ -66,8 +79,53 @@ In this section we will discuss the algorithms selected and the output we obtain
 
 % Check spell
 \subsection{Background Removal} 
-Background removal is a technique that allows to remove the background from the image, this way, the output will be only the foreground in the form of a binarized image.
+Background removal is a technique that allows to remove the background from the image, this way, the output will be only the foreground highlighted in the form of a binarized image as it can be ilustrated on the figure \ref{fig: img_reference}. 
 
+\begin{figure}[h]
+    \begin{subfigure}[t]{0.5\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/bin_ex.jpg}
+        \caption{Output of background substraction using cv2.threshold(image, 100, 255, cv2.THRESH\_BINARY)}
+        \label{fig:y equals x}
+    \end{subfigure}
+    ~
+    \begin{subfigure}[t]{0.5\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/or_ex.jpg}
+        \caption{Original 1660320000.jpg}
+        \label{fig:y equals x}
+    \end{subfigure}
+
+    \caption{Reference images}
+    \label{fig: img_reference}
+\end{figure}
+
+\subsection*{CLAHE}
+
+In the case of our problem, first we have imported all the images in black and white integer values using \codeword{cv2.imread(img,0)}. Then for a better extraction, it has been applyed an \textbf{algorithm of CLAHE} seen previously on the course to try to uniformize the ilumination of the images. With a more uniform images, we will be able to distinguish more precisely our foreground and artifact like shadows casted by objects on the images may have less impact on the \textbf{binarization process}.
+
+\subsection*{Background Image}
+
+For the selection of our background image, in a starting point the \textbf{average image} was computed as the main way for accomplish foreground extraction, but the resulting image generally was really noisy and with ghosting effect very present on it, which decreased the performance of the algorithm as it can bee seen on the Figure \ref{fig:avg}. Even with a gaussian blur applyed to try to counter the ghosty figures, they are still really present on the image. The image averaging is a good idea generally for noise reduction and in this case to try to obtain a neutral image were the background is predominant, but there is not enought images to obtain a more sharp image to really have a good background. Therefore, we \textbf{end up} using the image 1660284000.jpg with a gaussian blur applyed as our background, this way we obtain better results on the \textbf{binarization process}.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{img/avg.png}
+    \caption{Average image with a gaussian blur applyed with a kernel of (11,11)}
+    \label{fig:avg}
+\end{figure}
+
+
+\subsection*{Substraction}
+
+Once we have selected our background, we should substract every image with our background, this way what we obtained has the foreground (in this case the persons) highlighted as we can see in the figure \ref{fig:sub}. 
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{img/sub.jpg}
+    \caption{Image obtained by applying cv2.subtract(background, image)}
+    \label{fig:sub}
+\end{figure}
 
 THRESH\_OTSU funciona bien salvo en los casos donde empieza a haber sompras en la imagen, a la hora de aplicar el thresholding obtendremos un número muy grande de falsos positivos en las pequeñas montaás que hace la arena, las dimensionas que tienen son similares a las de una cabeza humana por lo que si las eliminasemos estariamos eliminando buenas deteccionas.
 
