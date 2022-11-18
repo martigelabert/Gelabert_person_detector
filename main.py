@@ -63,19 +63,25 @@ if __name__ == '__main__':
 
     # Load the images in gray scale.
     images, _fileNames = loadImages(folder_dir, extension, 0)
+
+    wimgs(images, _fileNames, 'gen/gray')
+
     # For the output plot
     images_color, _ = loadImages(folder_dir, extension, 1)
-    _empty = cv2.imread('Gelabert/1660284000.jpg', 0)
+    
 
     # We need the iluminations of the images to be uniform
     # this way we will be able to substract the background
     # with a more consistent ilumination though the images
 
     clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
-
+    _empty = clahe.apply(cv2.imread('Gelabert/1660284000.jpg', 0))
     # Applying Adaptative Histogram Equalization
     # between the images will make the ilumination more consistent.
     images_equ = [clahe.apply(img) for img in images] 
+    wimgs(images_equ, _fileNames, 'gen/equ')
+
+
 
     # Image Averaging
     avg = images_equ[0].astype(np.float64)  # We use float64 to avoid overflow

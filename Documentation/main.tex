@@ -100,25 +100,78 @@ Background removal is a technique that allows to remove the background from the 
     \label{fig: img_reference}
 \end{figure}
 
+In the following sections will be explained how the preprocessing of this technique was prepared and for what they are used for. They are ordered by    
+
 \subsection*{CLAHE}
 
 In the case of our problem, first we have imported all the images in black and white integer values using \codeword{cv2.imread(img,0)}. Then for a better extraction, it has been applyed an \textbf{algorithm of CLAHE} seen previously on the course to try to uniformize the ilumination of the images. With a more uniform images, we will be able to distinguish more precisely our foreground and artifact like shadows casted by objects on the images may have less impact on the \textbf{binarization process}.
 
+\begin{figure}[h]
+    \centering % <-- added
+\begin{subfigure}{0.25\textwidth}
+  \includegraphics[width=\linewidth]{img/equ/1660284000.jpg}
+  \caption{1660284000.jpg with CLAHE applyed}
+  \label{fig:1}
+\end{subfigure}\hfil % <-- added
+\begin{subfigure}{0.25\textwidth}
+  \includegraphics[width=\linewidth]{img/equ/1660287600.jpg}
+  \caption{1660287600.jpg with CLAHE applyed}
+  \label{fig:2}
+\end{subfigure}\hfil % <-- added
+\begin{subfigure}{0.25\textwidth}
+  \includegraphics[width=\linewidth]{img/equ/1660302000.jpg}
+  \caption{1660302000.jpg with CLAHE applyed}
+  \label{fig:3}
+\end{subfigure}
+
+\medskip
+\begin{subfigure}{0.25\textwidth}
+  \includegraphics[width=\linewidth]{../gen/gray/1660284000.jpg}
+  \caption{1660284000.jpg gray}
+  \label{fig:4}
+\end{subfigure}\hfil % <-- added
+~
+\begin{subfigure}{0.25\textwidth}
+    \includegraphics[width=\linewidth]{../gen/gray/1660287600.jpg}
+    \caption{1660287600.jpg gray}
+    \label{fig:4}
+  \end{subfigure}\hfil % <-- added
+~
+  \begin{subfigure}{0.25\textwidth}
+    \includegraphics[width=\linewidth]{../gen/gray/1660302000.jpg}
+    \caption{1660302000.jpg gray}
+    \label{fig:4}
+  \end{subfigure}\hfil % <-- added
+  \caption{Images from Gelabert folder where the first row presents a more uniform ilumination across frames ompared with the second row images.}
+\end{figure}
 \subsection*{Background Image}
 
 For the selection of our background image, in a starting point the \textbf{average image} was computed as the main way for accomplish foreground extraction, but the resulting image generally was really noisy and with ghosting effect very present on it, which decreased the performance of the algorithm as it can bee seen on the Figure \ref{fig:avg}. Even with a gaussian blur applyed to try to counter the ghosty figures, they are still really present on the image. The image averaging is a good idea generally for noise reduction and in this case to try to obtain a neutral image were the background is predominant, but there is not enought images to obtain a more sharp image to really have a good background. Therefore, we \textbf{end up} using the image 1660284000.jpg with a gaussian blur applyed as our background, this way we obtain better results on the \textbf{binarization process}.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\textwidth]{img/avg.png}
+    \includegraphics[width=0.75\textwidth]{img/avg.png}
     \caption{Average image with a gaussian blur applyed with a kernel of (11,11)}
     \label{fig:avg}
 \end{figure}
 
 
+\subsection*{Gaussian Blur}
+With an image already selected for the image background, it is applyed a gaussian filtering with a kernel of size (7,7), this way  we can obtain a more standard image, and get a more smuthered image that will allow the algorithm to contrast slightly better our foreground.\newline
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\textwidth]{img/back_blur.png}
+    \caption{Gaussian Blur Applyed with a kernel of size (7,7)}
+    \label{fig:gaussian}
+\end{figure}
+
+The ending size used for gaussian blur was obtained by trial and error experimentation, and could be changed to get different ending behaveours.
+
+
 \subsection*{Substraction}
 
-Once we have selected our background, we should substract every image with our background, this way what we obtained has the foreground (in this case the persons) highlighted as we can see in the figure \ref{fig:sub}. 
+Once we have selected our background and applyed the preprocessing we should substract every image with our background, this way, the resulting image is the foreground (in this case the persons and some residuals) highlighted as we can see in the figure \ref{fig:sub}. 
 
 \begin{figure}
     \centering
