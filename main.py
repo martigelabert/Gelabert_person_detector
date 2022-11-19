@@ -98,8 +98,6 @@ if __name__ == '__main__':
 
     # substraction between avg and the images with CLAHE applyed
     sub = [cv2.subtract(avg, equ) for equ in images_equ]
-    sub = [cv2.erode(b, np.ones((1, 1), np.uint8), iterations=1)
-           for b in sub]
 
     # cv2.imshow("Method 1, sub", sub[0])
     # bin = [cv2.threshold(s, 127, 255, cv2.THRESH_BINARY)[1] for s in sub]
@@ -112,7 +110,7 @@ if __name__ == '__main__':
     mask = mask.astype(np.uint8)
     bin = [cv2.bitwise_and(b, b, mask=mask) for b in bin]
 
-    dil = [cv2.dilate(b, np.ones((10, 10), np.uint8), iterations=1)
+    dil = [cv2.dilate(b, np.ones((8, 8), np.uint8), iterations=1)
            for b in bin]
 
     wimgs(sub, _fileNames, 'gen/sub')
@@ -137,6 +135,7 @@ if __name__ == '__main__':
             img = cv2.rectangle(img, (x, y), (x + w, y + h), (0, 0, 255), 2)
         det.append(det_frame)  # Set of coordenates split by frame
         img_det.append(img)  # images
+    wimgs(img_det, _fileNames, 'gen/det')
 
     # loading the labels for the images
     df = pd.read_csv('final_labels_gelabert_person_counter.csv',

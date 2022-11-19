@@ -25,7 +25,7 @@
             anchorcolor = blue]{hyperref}
 \usepackage{xcolor}
 \usepackage{listings}
-
+\usepackage[section]{placeins}
 \usepackage{xparse}
 
 \NewDocumentCommand{\codeword}{v}{%
@@ -44,7 +44,6 @@
 \maketitle
 
 \tableofcontents
-
 \section{Introduction}
 The assignment consists in \textbf{counting} the number of people that appear on the given images. There was not an stablished way to aproach this problem. In this case I have taken the decision of using the computer vision algorithms seen in class and not relay on deep learning or any kind of artificial inteligence algorithm. This is because not by de amount of data needed for training, due to there are really god datasets out there, like MS COCO, but because of the effort of building a good performing detector architecture. Use an already set framework as YOLO or Mask-RCNN would be the way to accomplish the task, but I would be thinking about it as "cheating". Therefore, this way, using the content seen in class, I will be more cautious about my decisions and It will be much easier to justify them.\\
 
@@ -136,17 +135,18 @@ In the case of our problem, first we have imported all the images in black and w
   \end{subfigure}\hfil % <-- added
   \caption{Images from Gelabert folder where the first row presents a more uniform ilumination across frames ompared with the second row images.}
 \end{figure}
+
+
 \subsubsection*{Background Image}
 
 For the selection of our background image, in a starting point the \textbf{average image} was computed as the main way for accomplish foreground extraction, but the resulting image generally was really noisy and with ghosting effect very present on it, which decreased the performance of the algorithm as it can bee seen on the Figure \ref{fig:avg}. Even with a gaussian blur applyed to try to counter the ghosty figures, they are still really present on the image. The image averaging is a good idea generally for noise reduction and in this case to try to obtain a neutral image were the background is predominant, but there is not enought images to obtain a more sharp image to really have a good background. Therefore, we \textbf{end up} using the image 1660284000.jpg with a gaussian blur applyed as our background, this way we obtain better results on the \textbf{binarization process}.
 
-\begin{figure}[h]
+\begin{figure}[htb]
     \centering
     \includegraphics[width=\textwidth]{img/avg.png}
     \caption{Average image with a gaussian blur applyed with a kernel of (11,11)}
     \label{fig:avg}
 \end{figure}
-
 
 \subsubsection*{Gaussian Blur}
 With an image already selected for the image background, it is applyed a gaussian filtering with a kernel of size (7,7), this way  we can obtain a more standard image, and get a more smuthered image that will allow the algorithm to contrast slightly better our foreground.\newline
@@ -221,7 +221,14 @@ Now, with the image binarized we will a apply a dilation to the image. The dilat
 
 
 \subsection{Find contours}
+Once a binarized image is obtained, there should be a process of contour detection. Here we use the dilated images over the function that openCV provides \codeword{cv2.findContours()}. From this functions, we can extract the bounding boxes that contain each of the object contours. In the figure \ref{fig:detections} appears the image with some bounding boxes applyed.
 
+\begin{figure}
+    \centering
+    \includegraphics[]{}
+    \caption{}
+    \label{fig:detections}
+\end{figure}
 
 \subsection{Matching Algorithm}
 For convenience, we will cuantify our detection accuracy using the some "incorrect" assumptions. We will be checking if the bounding box contain contains a label, and in the case we get the same label 
@@ -254,5 +261,7 @@ If we are looking for \textbf{horizontal-like} features, applying an horizontal 
 In general the shapes that a person can describe may suffer alot of distorsion depending of the angle where the frame was took, the person posture, etc. Not always will be a perfet pose to the researchers to easily identify if an object is a person or not. There is no key shape that we could use, but we can try use common sense. The images gathered, are related to people moving standing up, swiming or just taking sunbathing.
 
 \end{comment}
+
+
 
 \end{document}
