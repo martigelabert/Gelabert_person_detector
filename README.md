@@ -1,6 +1,21 @@
 # A simple detector for crowd counting using OpenCV and Python
 
 
+## Folder structure
+
+'match' and 'det' have the filtered rois matching the ground truth and the algorithm output respectively.
+
+    ├── Gelabert
+    ├── gen
+    │   ├── bin
+    │   ├── det
+    │   ├── dil
+    │   ├── equ
+    │   ├── gray
+    │   ├── match
+    │   └── sub
+    └── slides
+
 # Execution
 
 > Be coherent, if changed the image path you need to specify the path of the empty image
@@ -45,7 +60,7 @@ For a basic execution just :
 
 # OUTPUT
 
-Final detections
+Final detections output
 ![Detections](gen/det/1660291200.jpg)
 
 
