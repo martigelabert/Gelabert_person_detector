@@ -53,6 +53,7 @@ if __name__ == '__main__':
                                      + 'detectection and crowd counting in '
                                      + 'beautiful pictures!')
     parser.add_argument('-p', '--plot', type=bool, default=False,
+                        action=argparse.BooleanOptionalAction,
                         help='Plot the results with matplotlib at the end'
                               + 'of the execution')
     parser.add_argument('-f', '--folder', type=str, default='Gelabert',
@@ -60,8 +61,13 @@ if __name__ == '__main__':
     parser.add_argument('-e', '--extension', type=str, default='*.jpg',
                         required=False,
                         help='Custom extension to the images to load')
+    parser.add_argument('-em', '--empty', type=str,
+                        default='Gelabert/1660284000.jpg',
+                        required=False,
+                        help='Specify the path to the empty image')
 
     folder_dir = parser.parse_args().folder
+    _empty_dir = parser.parse_args().empty
     extension = parser.parse_args().extension
 
     # Load the images in gray scale.
@@ -80,7 +86,7 @@ if __name__ == '__main__':
     # with a more consistent ilumination though the images
 
     clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
-    _empty = clahe.apply(cv2.imread('Gelabert/1660284000.jpg', 0))
+    _empty = clahe.apply(cv2.imread(_empty_dir, 0))
 
     # Applying Adaptative Histogram Equalization
     # between the images will make the ilumination more consistent.
@@ -117,11 +123,17 @@ if __name__ == '__main__':
     det = []  # the x, y, w, h for all the detections for each image
 
     data = dict((i, {
-                                'image_name': '',
-                                'rois': [],
-                                'gt': []  # ground th
+                        'image_name': '',
+                        'rois': [],
+                        'gt': [],  # ground th
+                        'filter_rois': [],  # the rois we end up with
+                        'num_det':  0,
+                        'real_det': 0,
+                        'n_filtered': 0,  # In case we have some bbox deleted 
                     }) for i in names)
 
+    # Loop for fill the data dictionary with
+    # the rois
     for i in range(len(images)):
         det_frame = []
         img = images_color[i].copy()
@@ -141,108 +153,89 @@ if __name__ == '__main__':
                      names=['Class', 'X', 'Y', 'filename',
                             'img_w', 'img_h'])
 
-    info = []
+    # updating the dictionary with the ground truth
     for i in range(len(images)):
-        x = {
-             'name': _fileNames[i],
-             #   'original': images[i],
-             #   'substracted': sub[i],
-             #   'detection_img': img_det[i],
-             # 'det_bbox': det[i],
-             'num_det': len(det[i]),
-             'real_det': len(df.groupby('filename').indices[_fileNames[i]
-                             .split('/')[1]])
-            }
-        info.append(x)
-
-    for index, row in df.iterrows():
-        img_det[_fileNames.index('Gelabert/'+str(row['filename']))
-                ] = cv2.circle(img_det[_fileNames.index('Gelabert/'
-                                                        + str(row['filename']))
-                                       ], (int(row['X']), int(row['Y'])),
-                               1, (255, 0, 0), 3)
-        # images_color[_fileNames.index('Gelabert/' + str(row['filename']))] = img_det[_fileNames.index('Gelabert/' + str(row['filename']))].copy()
+        data[names[i]]['real_det'] = len(df.groupby('filename').indices[
+                                            names[i]])
 
     for index, row in df.iterrows():
         data[str(row['filename'])]['gt'].append((int(row['X']), int(row['Y'])))
-    
-    for i in range(len(images_color)):
-        demo = images_color[i].copy()
-        for gt in data[names[i]]['gt']:
-            demo = cv2.circle(demo, gt, 1, (255, 0, 0), 3)
-        print('real', names[i], ' -> ', len(data[names[i]]['gt']))
-        plt.imshow(demo)
-        plt.show()
 
-    detection_number = np.zeros_like(contours_images)
+        img_det[_fileNames.index('Gelabert/'+str(row['filename']))
+                ] = cv2.circle(img_det[_fileNames.index('Gelabert/'
+                                                        + str(row['filename']))
+                                       ],
+                               (int(row['X']), int(row['Y'])),
+                               1, (255, 0, 0), 3)
+
+    filtered_imgs = []
     for i in range(len(_fileNames)):
         file = _fileNames[i].split('/')[1]
         img = images_color[i].copy()
 
-        # Variable to count matches per image
-        detections_matched = 0
-
         # Checking for all labels which bounding boxes contain her
-        print(file)
         for coord in data[file]['gt']:
-            found = False
             for x, y, w, h in det[i]:
-                if w < images[0].shape[0]/3 and h < images[0].shape[1]/3:
+                # if roi not too big or really small chech it
+                if ((w < images[0].shape[0]/3 and h < images[0].shape[1]/3)
+                        or (w < 2 or h < 2)):
                     if (coord[0] >= x and coord[0] <= x+w and coord[1] >= y and
                        coord[1] <= y+h):
-                        # print('x = ', x, ' y = ', y, ' in ', coord)
-                        detections_matched += 1
                         img = cv2.rectangle(img, (x, y), (x + w, y + h),
                                             (0, 255, 0), 2)
                         img = cv2.circle(img, coord,
                                          1, (255, 0, 0), 3)
+                        data[file]['filter_rois'].append((x, y, w, h))
+                        data[file]['num_det'] += 1
 
                         # If it contains at least one label we will count it
-                        # as detection we will loose all extra information
-                        # but this algorithm can
+                        # as detection. We will loose all extra labels inside
+                        # but this algorithm can't
                         # perform any better with the current configuration
-                        found = True
                         break
                 else:
-                    pass
-
-        print(detections_matched)
-        detection_number[i] = detections_matched
-        plt.figure(figsize=(20, 20), dpi=150)
-        plt.imshow(img)
-        plt.show()
+                    data[file]['n_filtered'] += 1
+        filtered_imgs.append(img)
 
     MAE = 0.0
 
     rows = 2
     cols = 2
-    if parser.parse_args().plot:
-        for i in range(len(images)):
 
-            print("File -> ", info[i], " | ", detection_number[i], " of ",
-                  info[i]['real_det'])
+    for i in range(len(images)):
 
-            MAE += abs((detection_number[i] - info[i]['real_det']))
-            plt.rcParams["figure.figsize"] = (15, 15)
-            fig, axs = plt.subplots(rows, cols)
+        if _empty_dir == 'Gelabert/'+data[names[i]]['image_name']:
+            print('Not computing empty image...')
+        else:
+            precission = data[names[i]]['num_det'] / (len(data[
+                                                      names[i]]['rois']) -
+                                                      data[file]['n_filtered'])
 
-            axs[0, 0].imshow(resize(images[i]), cmap='gray')
-            axs[0, 0].set_title("original image")
+            print("File -> ", data[names[i]]['image_name'], ' Precission = ',
+                  precission,
+                  " | ",
+                  data[names[i]]['num_det'], " of ",
+                  data[names[i]]['real_det'])
 
-            axs[1, 0].imshow(resize(sub[i]), cmap='gray')
-            axs[1, 0].set_title("cv2.substract(_empty,original_image)")
-            axs[1, 0].sharex(axs[0, 0])
+            MAE += abs((data[names[i]]['num_det'] -
+                        data[names[i]]['real_det']))
+            if parser.parse_args().plot:
+                plt.rcParams["figure.figsize"] = (15, 15)
+                fig, axs = plt.subplots(rows, cols, dpi=150)
 
-            axs[0, 1].imshow(resize(cv2.cvtColor(img_det[i], 
-                                    cv2.COLOR_BGR2RGB)))
-            axs[0, 1].set_title("detections")
+                axs[0, 0].imshow(resize(images[i]), cmap='gray')
+                axs[0, 0].set_title("original image")
 
-            axs[1, 1].imshow(resize(_empty), cmap='gray')
-            axs[1, 1].set_title("average image")
-            fig.tight_layout()
-            plt.show()
-    else:
-        for i in range(len(images)):
-            MAE += abs((detection_number[i] - info[i]['real_det']))
+                axs[1, 0].imshow(resize(sub[i]), cmap='gray')
+                axs[1, 0].set_title("cv2.substract(_empty,original_image)")
+                axs[1, 0].sharex(axs[0, 0])
 
-    print("MAE = ", MAE / len(images))
+                axs[0, 1].imshow(resize(cv2.cvtColor(filtered_imgs[i],
+                                        cv2.COLOR_BGR2RGB)))
+                axs[0, 1].set_title("Clean detections")
+
+                axs[1, 1].imshow(resize(cv2.cvtColor(img_det[i],
+                                        cv2.COLOR_BGR2RGB)))
+                axs[1, 1].set_title("Non-filtered detections")
+                fig.tight_layout()
+                plt.show()
