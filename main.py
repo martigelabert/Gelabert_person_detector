@@ -1,3 +1,5 @@
+# Martí Gelabert Gómez
+
 import cv2
 import numpy as np
 from pathlib import Path
@@ -10,7 +12,7 @@ import argparse
 
 
 def loadImages(folder_dir: str, extension: str, color=1) -> np.ndarray:
-    """Allows loading the images from a selected path"""
+    """Loads the images from a selected path"""
     images = []
     _fileNames = Path(folder_dir).glob(extension)
     names = []
@@ -19,11 +21,12 @@ def loadImages(folder_dir: str, extension: str, color=1) -> np.ndarray:
         img = cv2.imread(str(i), color)
         images.append(img)
     images = np.array(images)
-
+    # names[i] = 'Gelabert/xxxxxxx.jpg'
     return images, names
 
 
 def resize(img):
+    """Method for resizing images - DEBUG"""
     scale_percent = 60  # percent of original size
     width = int(img.shape[1] * scale_percent / 100)
     height = int(img.shape[0] * scale_percent / 100)
@@ -34,7 +37,7 @@ def resize(img):
 
 
 def wimgs(imgs, names, folder):
-    """Method for printing dat"""
+    """Method for saving a list of images given their names and folder path"""
     if not os.path.exists(folder):
         os.makedirs(folder)
     else:
@@ -64,35 +67,26 @@ if __name__ == '__main__':
     # Load the images in gray scale.
     images, _fileNames = loadImages(folder_dir, extension, 0)
 
+    # Just the names of the files withouth the path dir attached
+    names = [i.split('/')[1] for i in _fileNames]
+
     wimgs(images, _fileNames, 'gen/gray')
 
     # For the output plot
     images_color, _ = loadImages(folder_dir, extension, 1)
-    
+
     # We need the iluminations of the images to be uniform
     # this way we will be able to substract the background
     # with a more consistent ilumination though the images
 
     clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
     _empty = clahe.apply(cv2.imread('Gelabert/1660284000.jpg', 0))
+
     # Applying Adaptative Histogram Equalization
     # between the images will make the ilumination more consistent.
-    images_equ = [clahe.apply(img) for img in images] 
+    images_equ = [clahe.apply(img) for img in images]
     wimgs(images_equ, _fileNames, 'gen/equ')
 
-    # Image Averaging
-    avg = images_equ[0].astype(np.float64)  # We use float64 to avoid overflow
-    for i in range(len(images_equ)):
-        if i == 0:
-            pass
-        else:
-            avg += images_equ[i].astype(np.float64)
-
-    avg = avg/len(images_equ)
-    avg = avg.astype(np.uint8)
-
-    # blur with gaussian kernels, need odd ksize
-    # avg = cv2.GaussianBlur(avg, (17, 17), 0)
     # Using the empty image we obtain better results
     _empty = cv2.GaussianBlur(_empty, (15, 15), 0)
 
@@ -109,6 +103,7 @@ if __name__ == '__main__':
     dil = [cv2.dilate(b, np.ones((10, 10), np.uint8), iterations=1)
            for b in bin]
 
+    # Saving images on disk
     wimgs(sub, _fileNames, 'gen/sub')
     wimgs(bin, _fileNames, 'gen/bin')
     wimgs(dil, _fileNames, 'gen/dil')
@@ -120,24 +115,31 @@ if __name__ == '__main__':
 
     img_det = []  # images with the bboxes on top
     det = []  # the x, y, w, h for all the detections for each image
-    for i in range(len(contours_images)):
+
+    data = dict((i, {
+                                'image_name': '',
+                                'rois': [],
+                                'gt': []  # ground th
+                    }) for i in names)
+
+    for i in range(len(images)):
         det_frame = []
         img = images_color[i].copy()
+        data[names[i]]['image_name'] = names[i]
         for c in contours_images[i]:
             x, y, w, h = cv2.boundingRect(c)
             det_frame.append([x, y, w, h])
+            data[names[i]]['rois'].append((x, y, w, h))
             img = cv2.rectangle(img, (x, y), (x + w, y + h), (0, 0, 255), 2)
         det.append(det_frame)  # Set of coordenates split by frame
         img_det.append(img)  # images
+
     wimgs(img_det, _fileNames, 'gen/det')
 
     # loading the labels for the images
     df = pd.read_csv('final_labels_gelabert_person_counter.csv',
                      names=['Class', 'X', 'Y', 'filename',
                             'img_w', 'img_h'])
-
-    rows = 2
-    cols = 2
 
     info = []
     for i in range(len(images)):
@@ -159,48 +161,61 @@ if __name__ == '__main__':
                                                         + str(row['filename']))
                                        ], (int(row['X']), int(row['Y'])),
                                1, (255, 0, 0), 3)
-        images_color[_fileNames.index('Gelabert/' + str(row['filename']))] = img_det[_fileNames.index('Gelabert/' + str(row['filename']))].copy()
+        # images_color[_fileNames.index('Gelabert/' + str(row['filename']))] = img_det[_fileNames.index('Gelabert/' + str(row['filename']))].copy()
 
-    # dictionary with all the coordinates in tuple form where it is a person
-    labels = dict.fromkeys([i.split('/')[1] for i in _fileNames], [])
     for index, row in df.iterrows():
-        labels[row['filename']].append(((int(row['X']),
-                                         int(row['Y']))))
+        data[str(row['filename'])]['gt'].append((int(row['X']), int(row['Y'])))
+    
+    for i in range(len(images_color)):
+        demo = images_color[i].copy()
+        for gt in data[names[i]]['gt']:
+            demo = cv2.circle(demo, gt, 1, (255, 0, 0), 3)
+        print('real', names[i], ' -> ', len(data[names[i]]['gt']))
+        plt.imshow(demo)
+        plt.show()
 
     detection_number = np.zeros_like(contours_images)
-    for i in range(len(contours_images)):
+    for i in range(len(_fileNames)):
         file = _fileNames[i].split('/')[1]
         img = images_color[i].copy()
-        img_red = images_color[i].copy()
 
         # Variable to count matches per image
         detections_matched = 0
+
         # Checking for all labels which bounding boxes contain her
-        for coord in labels[file]:
+        print(file)
+        for coord in data[file]['gt']:
             found = False
             for x, y, w, h in det[i]:
-                if w < images.shape[0]/3 or h < images.shape[1]/3:
+                if w < images[0].shape[0]/3 and h < images[0].shape[1]/3:
                     if (coord[0] >= x and coord[0] <= x+w and coord[1] >= y and
-                        coord[1] <= y+h):
+                       coord[1] <= y+h):
                         # print('x = ', x, ' y = ', y, ' in ', coord)
                         detections_matched += 1
-                        img = cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
+                        img = cv2.rectangle(img, (x, y), (x + w, y + h),
+                                            (0, 255, 0), 2)
+                        img = cv2.circle(img, coord,
+                                         1, (255, 0, 0), 3)
 
-                        # If it contains at least one label we will count it as detection
-                        # we will loose all extra information but this algorithm can
+                        # If it contains at least one label we will count it
+                        # as detection we will loose all extra information
+                        # but this algorithm can
                         # perform any better with the current configuration
                         found = True
                         break
                 else:
                     pass
+
         print(detections_matched)
-        detection_number[i] += detections_matched
+        detection_number[i] = detections_matched
         plt.figure(figsize=(20, 20), dpi=150)
         plt.imshow(img)
         plt.show()
 
     MAE = 0.0
 
+    rows = 2
+    cols = 2
     if parser.parse_args().plot:
         for i in range(len(images)):
 
@@ -215,14 +230,14 @@ if __name__ == '__main__':
             axs[0, 0].set_title("original image")
 
             axs[1, 0].imshow(resize(sub[i]), cmap='gray')
-            axs[1, 0].set_title("cv2.substract(avg,original_image)")
+            axs[1, 0].set_title("cv2.substract(_empty,original_image)")
             axs[1, 0].sharex(axs[0, 0])
 
             axs[0, 1].imshow(resize(cv2.cvtColor(img_det[i], 
                                     cv2.COLOR_BGR2RGB)))
             axs[0, 1].set_title("detections")
 
-            axs[1, 1].imshow(resize(avg), cmap='gray')
+            axs[1, 1].imshow(resize(_empty), cmap='gray')
             axs[1, 1].set_title("average image")
             fig.tight_layout()
             plt.show()
@@ -230,5 +245,4 @@ if __name__ == '__main__':
         for i in range(len(images)):
             MAE += abs((detection_number[i] - info[i]['real_det']))
 
-    cv2.imwrite("gen/avg_blur.png", avg)
     print("MAE = ", MAE / len(images))
