@@ -202,6 +202,8 @@ if __name__ == '__main__':
     rows = 2
     cols = 2
 
+    wimgs(filtered_imgs, _fileNames, 'gen/match')
+
     for i in range(len(images)):
 
         if _empty_dir == 'Gelabert/'+data[names[i]]['image_name']:
@@ -215,7 +217,7 @@ if __name__ == '__main__':
                   precission,
                   " | ",
                   data[names[i]]['num_det'], " of ",
-                  data[names[i]]['real_det'])
+                  data[names[i]]['real_det'], ' detections')
 
             MAE += abs((data[names[i]]['num_det'] -
                         data[names[i]]['real_det']))
