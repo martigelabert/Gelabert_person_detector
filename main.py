@@ -94,23 +94,19 @@ if __name__ == '__main__':
     # blur with gaussian kernels, need odd ksize
     # avg = cv2.GaussianBlur(avg, (17, 17), 0)
     # Using the empty image we obtain better results
-    avg = cv2.GaussianBlur(_empty, (15, 15), 0)
+    _empty = cv2.GaussianBlur(_empty, (15, 15), 0)
 
     # substraction between avg and the images with CLAHE applyed
-    sub = [cv2.subtract(avg, equ) for equ in images_equ]
+    sub = [cv2.subtract(_empty, equ) for equ in images_equ]
 
-    # cv2.imshow("Method 1, sub", sub[0])
-    # bin = [cv2.threshold(s, 127, 255, cv2.THRESH_BINARY)[1] for s in sub]
     bin = [cv2.threshold(s, 100, 255, cv2.THRESH_BINARY)[1] for s in sub]
-    # bin = [cv2.threshold(s, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)[1]
-    #       for s in sub]
 
     # Aplication of a binary mask to the already binarized images
     mask = cv2.imread('mask.png', 0) / 255.0
     mask = mask.astype(np.uint8)
     bin = [cv2.bitwise_and(b, b, mask=mask) for b in bin]
 
-    dil = [cv2.dilate(b, np.ones((8, 8), np.uint8), iterations=1)
+    dil = [cv2.dilate(b, np.ones((10, 10), np.uint8), iterations=1)
            for b in bin]
 
     wimgs(sub, _fileNames, 'gen/sub')
@@ -121,8 +117,6 @@ if __name__ == '__main__':
     contours_images = [cv2.findContours(d, cv2.RETR_TREE,
                                         cv2.CHAIN_APPROX_SIMPLE)[0]
                        for d in dil]
-
-    # cv2.imshow("Method 1, dil", dil[0])
 
     img_det = []  # images with the bboxes on top
     det = []  # the x, y, w, h for all the detections for each image
@@ -141,9 +135,6 @@ if __name__ == '__main__':
     df = pd.read_csv('final_labels_gelabert_person_counter.csv',
                      names=['Class', 'X', 'Y', 'filename',
                             'img_w', 'img_h'])
-
-    # for i in df.groupby('filename').indices:
-    #    print(df.groupby('filename').indices[i])
 
     rows = 2
     cols = 2
@@ -168,14 +159,55 @@ if __name__ == '__main__':
                                                         + str(row['filename']))
                                        ], (int(row['X']), int(row['Y'])),
                                1, (255, 0, 0), 3)
+        images_color[_fileNames.index('Gelabert/' + str(row['filename']))] = img_det[_fileNames.index('Gelabert/' + str(row['filename']))].copy()
+
+    # dictionary with all the coordinates in tuple form where it is a person
+    labels = dict.fromkeys([i.split('/')[1] for i in _fileNames], [])
+    for index, row in df.iterrows():
+        labels[row['filename']].append(((int(row['X']),
+                                         int(row['Y']))))
+
+    detection_number = np.zeros_like(contours_images)
+    for i in range(len(contours_images)):
+        file = _fileNames[i].split('/')[1]
+        img = images_color[i].copy()
+        img_red = images_color[i].copy()
+
+        # Variable to count matches per image
+        detections_matched = 0
+        # Checking for all labels which bounding boxes contain her
+        for coord in labels[file]:
+            found = False
+            for x, y, w, h in det[i]:
+                if w < images.shape[0]/3 or h < images.shape[1]/3:
+                    if (coord[0] >= x and coord[0] <= x+w and coord[1] >= y and
+                        coord[1] <= y+h):
+                        # print('x = ', x, ' y = ', y, ' in ', coord)
+                        detections_matched += 1
+                        img = cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
+
+                        # If it contains at least one label we will count it as detection
+                        # we will loose all extra information but this algorithm can
+                        # perform any better with the current configuration
+                        found = True
+                        break
+                else:
+                    pass
+        print(detections_matched)
+        detection_number[i] += detections_matched
+        plt.figure(figsize=(20, 20), dpi=150)
+        plt.imshow(img)
+        plt.show()
 
     MAE = 0.0
 
     if parser.parse_args().plot:
         for i in range(len(images)):
-            print("File -> ", info[i], " | ", info[i]['num_det'], " of ",
+
+            print("File -> ", info[i], " | ", detection_number[i], " of ",
                   info[i]['real_det'])
-            MAE += abs((info[i]['num_det'] - info[i]['real_det']))
+
+            MAE += abs((detection_number[i] - info[i]['real_det']))
             plt.rcParams["figure.figsize"] = (15, 15)
             fig, axs = plt.subplots(rows, cols)
 
@@ -196,7 +228,7 @@ if __name__ == '__main__':
             plt.show()
     else:
         for i in range(len(images)):
-            MAE += abs((info[i]['num_det'] - info[i]['real_det']))
+            MAE += abs((detection_number[i] - info[i]['real_det']))
 
     cv2.imwrite("gen/avg_blur.png", avg)
     print("MAE = ", MAE / len(images))

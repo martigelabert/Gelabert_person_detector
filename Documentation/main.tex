@@ -219,19 +219,18 @@ Now, with the image binarized we will a apply a dilation to the image. The dilat
     \label{fig:dilation_ex}
 \end{figure}
 
-
 \subsection{Find contours}
 Once a binarized image is obtained, there should be a process of contour detection. Here we use the dilated images over the function that openCV provides \codeword{cv2.findContours()}. From this functions, we can extract the bounding boxes that contain each of the object contours. In the figure \ref{fig:detections} appears the image with some bounding boxes applyed.
 
 \begin{figure}
     \centering
-    \includegraphics[]{}
-    \caption{}
+    \includegraphics[width=\textwidth]{img/det_name.jpg}
+    \caption{Output of foreground detector, as it can be seen there are some big detections due to contourn detecting multiple forms as one shape, and some }
     \label{fig:detections}
 \end{figure}
 
 \subsection{Matching Algorithm}
-For convenience, we will cuantify our detection accuracy using the some "incorrect" assumptions. We will be checking if the bounding box contain contains a label, and in the case we get the same label 
+For convenience, we will cuantify our detection accuracy using the some "incorrect" assumptions. We will be checking if the bounding box contain labels, each label containing will be assigned to that bounding box and it will count as a separated detection. In the case we would have a really big box keeping a lot of detection we will not count that as correct, but in the cases where it may contain a region of 4 or 5 persons because they are really close to each other, we would be more flexibles. For checking the dimensionality of the bounding box, we would assume that width or height higher than a third of the image will not be acceptable, and the same for the ones no more than two pixels size. 
 
 \section{Results Analysis and Conclusions}
 
