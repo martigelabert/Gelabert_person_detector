@@ -1,5 +1,6 @@
 # A simple detector for crowd counting using OpenCV and Python
 
+Work in progress!
 
 ## Folder structure
 
