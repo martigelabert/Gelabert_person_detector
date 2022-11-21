@@ -1,10 +1,10 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2022.11.14)  15 NOV 2022 13:49
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2022.11.13)  21 NOV 2022 01:48
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
  %&-line parsing enabled.
-**/home/marti/Documentos/GitHub/Gelabert_person_detector/slides/main.tex
-(/home/marti/Documentos/GitHub/Gelabert_person_detector/slides/main.tex
+**/home/marti/Documents/GitHub/Gelabert_person_detector/slides/main.tex
+(/home/marti/Documents/GitHub/Gelabert_person_detector/slides/main.tex
 LaTeX2e <2021-11-15> patch level 1
 L3 programming layer <2022-01-21> (/usr/share/texlive/texmf-dist/tex/latex/beamer/beamer.cls
 Document Class: beamer 2022/01/21 v3.65 A class for typesetting presentations
@@ -679,14 +679,28 @@ Overfull \hbox (7.4054pt too wide) has occurred while \output is active
  [][][][] []  
  []
 
-[1
+[1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
 
-{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
+]
 Overfull \hbox (7.4054pt too wide) has occurred while \output is active
  [][][][] []  
  []
 
 [2
+
+]
+Overfull \hbox (7.4054pt too wide) has occurred while \output is active
+ [][][][] []  
+ []
+
+[3
+
+]
+Overfull \hbox (7.4054pt too wide) has occurred while \output is active
+ [][][][] []  
+ []
+
+[4
 
 ]
 \tf@nav=\write6
@@ -700,21 +714,21 @@ Overfull \hbox (7.4054pt too wide) has occurred while \output is active
 
  (./main.aux)
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
+(rerunfilecheck)             Checksum: 8109DBC775A491131CB1DDCC87676AF4;292.
  ) 
 Here is how much of TeX's memory you used:
- 21657 strings out of 478287
- 425837 string characters out of 5849288
- 677931 words of memory out of 5000000
- 39414 multiletter control sequences out of 15000+600000
+ 21751 strings out of 478287
+ 428022 string characters out of 5849288
+ 685936 words of memory out of 5000000
+ 39501 multiletter control sequences out of 15000+600000
  471071 words of font info for 34 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 128i,16n,122p,463b,570s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 128i,19n,122p,462b,637s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmss10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmss12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmss8.pfb>
-Output written on main.pdf (2 pages, 42354 bytes).
+Output written on main.pdf (4 pages, 52107 bytes).
 PDF statistics:
- 106 PDF objects out of 1000 (max. 8388607)
- 78 compressed objects within 1 object stream
- 5 named destinations out of 1000 (max. 500000)
- 103 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 191 PDF objects out of 1000 (max. 8388607)
+ 156 compressed objects within 2 object streams
+ 12 named destinations out of 1000 (max. 500000)
+ 133 words of extra memory for PDF output out of 10000 (max. 10000000)
 

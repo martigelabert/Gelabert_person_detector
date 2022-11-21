@@ -1,9 +1,9 @@
-PWD /home/marti/Documentos/GitHub/Gelabert_person_detector/slides
+PWD /home/marti/Documents/GitHub/Gelabert_person_detector/slides
 INPUT /etc/texmf/web2c/texmf.cnf
 INPUT /usr/share/texmf/web2c/texmf.cnf
 INPUT /usr/share/texlive/texmf-dist/web2c/texmf.cnf
 INPUT /var/lib/texmf/web2c/pdftex/pdflatex.fmt
-INPUT /home/marti/Documentos/GitHub/Gelabert_person_detector/slides/main.tex
+INPUT /home/marti/Documents/GitHub/Gelabert_person_detector/slides/main.tex
 OUTPUT main.log
 INPUT /usr/share/texlive/texmf-dist/tex/latex/beamer/beamer.cls
 INPUT /usr/share/texlive/texmf-dist/tex/latex/beamer/beamer.cls

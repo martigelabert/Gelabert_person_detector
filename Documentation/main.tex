@@ -230,9 +230,22 @@ Once a binarized image is obtained, there should be a process of contour detecti
 \end{figure}
 
 \subsection{Matching Algorithm}
-For convenience, we will cuantify our detection accuracy using the some "incorrect" assumptions. We will be checking if the bounding box contain labels, each label containing will be assigned to that bounding box and it will count as a separated detection. In the case we would have a really big box keeping a lot of detection we will not count that as correct, but in the cases where it may contain a region of 4 or 5 persons because they are really close to each other, we would be more flexibles. For checking the dimensionality of the bounding box, we would assume that width or height higher than a third of the image will not be acceptable, and the same for the ones no more than two pixels size. 
+For convenience, we will cuantify our detection accuracy using the some "incorrect" assumptions. We will be checking if the bounding box contain labels, only one label containing will be assigned to that bounding box. In the case we would have a really big box keeping a lot of detection we will not count that as correct, but in the cases where it may contain a region of 4 or 5 persons because they are really close to each other, we would be more flexibles.\newline
+
+For checking the dimensionality of the bounding box, we would assume that width or height higher than a third of the image will not be acceptable, and the same for the ones no more than two pixels size. 
 
 \section{Results Analysis and Conclusions}
+
+As we could be expecting, the performance is not really good compared to a neural network. There are some cases where we can be completely sure about classifing incorrectly our detection because of how the ground truth is placed, some detections are actually correct but slightly shifted and withouth a manually intervention it is safer to just leave it as 'incorrect'. In general, the amount of false positives increase in function of which process are used but overall the false positives generally concetrates in distance areas where there is a lot of information compacted and the dock area.\newline
+
+The use of background subtraction to try to extract completely our foreground is a tricky task, because using an averaged image could allow to have an image with the solid background on it, but it works better when we dispose with a lot of images. With just the images from the 'Gelabert' folder the image generated was not clear enought (even with some pprocessing) to accomplish the objective and in the end jsut using the emtyes image was the one given the best performance.\newline
+
+
+
+
+\begin{comment}
+    - No functions tamb
+\end{comment}
 
 \begin{comment}
     

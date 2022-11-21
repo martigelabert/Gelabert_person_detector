@@ -11,9 +11,31 @@
 
 \frame{\titlepage}
 
+\section*{Procedure}
 \begin{frame}
-\frametitle{a}
-This is some text in the first frame. This is some text in the first frame. This is some text in the first frame.
-\end{frame}
+\frametitle{Procedure}
+\begin{enumerate}
+    \item Import images as black and white.
+    \item Apply Adaptative Histogram equalization to the images.
+    %\item Generate an image from the averaging from all the images we have with the Histogram equalization already applyed.
+    \item Substract the background to the images using the image with the background.
+    \item Apply an erosion algorithm to obtain small highlighted areas.
+    \item Apply a thresholding algorithm to binarize the image.
+    \item Apply a dilation operation into the binarized images to expand the whites.
+    \item Use a contour algorithm to extract the diferent regions containing persons.
+    \item Obtain the bounding boxes from these regions.
+    \item Count them and compare the number of detections to the real cuantity.
+\end{enumerate}\end{frame}
+
+
+\section{Background Removal}
+    \begin{frame}
+        \frametitle{Background Removal}
+
+    \end{frame}
+\section*{CLIHE}
+    \begin{frame}
+        \frametitle{CLIHE}
+    \end{frame}
 
 \end{document}

@@ -1,0 +1,9 @@
+\contentsline {section}{\numberline {1}Introduction}{1}{section.1}%
+\contentsline {section}{\numberline {2}General Procedure}{1}{section.2}%
+\contentsline {section}{\numberline {3}algorithms}{2}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Background Removal}{2}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Binarization}{3}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Dilation}{4}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.4}Find contours}{4}{subsection.3.4}%
+\contentsline {subsection}{\numberline {3.5}Matching Algorithm}{4}{subsection.3.5}%
+\contentsline {section}{\numberline {4}Results Analysis and Conclusions}{9}{section.4}%
