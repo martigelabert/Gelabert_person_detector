@@ -133,9 +133,9 @@ if __name__ == '__main__':
     bin = [cv2.threshold(g,200,255,cv2.THRESH_BINARY)[1] for g in gray]
     # bin = [cv2.adaptiveThreshold( g,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY,11,2) for g in gray]
 
-    for i in range(10):
-        plt.imshow(bin[i], cmap='gray')
-        plt.show()    
+    #for i in range(10):
+    #    plt.imshow(bin[i], cmap='gray')
+    #    plt.show()    
 
     # Aplication of a binary mask to the already binarized images
     mask = cv2.imread('mask.png', 0) / 255.0
@@ -158,8 +158,8 @@ if __name__ == '__main__':
                         'rois': [],
                         'gt': [],  # ground th
                         'filter_rois': [],  # the rois we end up with
-                        'num_det':  0,
                         'real_det': 0,
+                        'notusefull': [],
                         'n_filtered': 0,  # In case we have some bbox deleted 
                     }) for i in names)
 
@@ -207,7 +207,7 @@ if __name__ == '__main__':
             for x, y, w, h in det[i]:
                 # if roi not too big or really small chech it
                 if ((w < images[0].shape[0]/3 and h < images[0].shape[1]/3)
-                        or (w < 2 or h < 2)):
+                        or (w < 20 or h < 20)):
                     if (coord[0] >= x and coord[0] <= x+w and coord[1] >= y and
                        coord[1] <= y+h):
                         img = cv2.rectangle(img, (x, y), (x + w, y + h),
@@ -215,40 +215,39 @@ if __name__ == '__main__':
                         img = cv2.circle(img, coord,
                                          1, (255, 0, 0), 3)
                         data[file]['filter_rois'].append((x, y, w, h))
-                        data[file]['num_det'] += 1
 
                         # If it contains at least one label we will count it
                         # as detection. We will loose all extra labels inside
                         # but this algorithm can't
                         # perform any better with the current configuration
-                        #break
+                        break
                 else:
-                    data[file]['n_filtered'] += 1
+                    if (x, y, w, h) not in data[file]['notusefull']:
+                        data[file]['notusefull'].append((x, y, w, h))
+
         filtered_imgs.append(img)
 
-    MAE = 0.0
-
-    rows = 2
-    cols = 2
+    MSE = 0.0
 
     for i in range(len(images)):
 
-        if _empty_dir == 'Gelabert/'+data[names[i]]['image_name']:
-            print('Not computing empty image...')
-        else:
-            precission = data[names[i]]['num_det'] / (len(data[
-                                                      names[i]]['rois']) -
-                                                      data[file]['n_filtered'])
+        tp = len(data[names[i]]['filter_rois'])
+        fp = len(data[names[i]]['rois']) - len(data[names[i]]['filter_rois']) - len(data[names[i]]['notusefull']) 
+        precission = tp / (tp + fp)
 
-            print("File -> ", data[names[i]]['image_name'], ' Precission = ',
-                  precission,
-                  " | ",
-                  data[names[i]]['num_det'], " of ",
-                  data[names[i]]['real_det'], ' detections')
+        print("File -> ", data[names[i]]['image_name'], ' Precission = ',
+                precission,
+                " | ",
+                (tp + fp), " of ",
+                data[names[i]]['real_det'],
+                ' real detections where matched', tp)
 
-            if parser.parse_args().plot:
+        MSE += (data[names[i]]['real_det'] - (tp + fp))**2
+        if parser.parse_args().plot:
 
-                cv2.imshow("filtered", filtered_imgs[i])
-                cv2.imshow("non-filter", img_det[i])
-                cv2.waitKey(0)
+            cv2.imshow("filtered", filtered_imgs[i])
+            cv2.imshow("non-filter", img_det[i])
+            cv2.waitKey(0)
 
+    MSE = MSE / (len(images))  # We are not computing the empty one
+    print('MSE = ', MSE)

@@ -127,8 +127,6 @@ if __name__ == '__main__':
                         'rois': [],
                         'gt': [],  # ground th
                         'filter_rois': [],  # the rois we end up with
-                        'num_det':  0,
-                        'num_matching':  0,
                         'real_det': 0,
                         'notusefull': [],
                         'n_filtered': 0,  # In case we have some bbox deleted 
@@ -181,8 +179,6 @@ if __name__ == '__main__':
                 # if roi not too big or really small chech it
                 if ((w < images[0].shape[0]/3 and h < images[0].shape[1]/3)
                         or (w < 2 or h < 2)):
-                    # Just saving if its valid or not
-                    data[file]['num_det'] += 1
                     if (coord[0] >= x and coord[0] <= x+w and coord[1] >= y and
                        coord[1] <= y+h):
                         img = cv2.rectangle(img, (x, y), (x + w, y + h),
@@ -190,8 +186,7 @@ if __name__ == '__main__':
                         img = cv2.circle(img, coord,
                                          1, (255, 0, 0), 3)
                         data[file]['filter_rois'].append((x, y, w, h))
-                        data[file]['num_matching'] += 1
-                        
+
                         # If it contains at least one label we will count it
                         # as detection. We will loose all extra labels inside
                         # but this algorithm can't
@@ -200,7 +195,7 @@ if __name__ == '__main__':
                 else:
                     if (x, y, w, h) not in data[file]['notusefull']:
                         data[file]['notusefull'].append((x, y, w, h))
-                    
+
         filtered_imgs.append(img)
 
     MSE = 0.0
@@ -217,13 +212,14 @@ if __name__ == '__main__':
         else:
             tp = len(data[names[i]]['filter_rois'])
             fp = len(data[names[i]]['rois']) - len(data[names[i]]['filter_rois']) - len(data[names[i]]['notusefull']) 
-            precission =  tp / (tp + fp)
-            
+            precission = tp / (tp + fp)
+
             print("File -> ", data[names[i]]['image_name'], ' Precission = ',
                   precission,
                   " | ",
                   (tp + fp), " of ",
-                  data[names[i]]['real_det'], ' real detections where matched', tp)
+                  data[names[i]]['real_det'],
+                  ' real detections where matched', tp)
 
             MSE += (data[names[i]]['real_det'] - (tp + fp))**2
             if parser.parse_args().plot:
