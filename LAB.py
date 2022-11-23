@@ -1,5 +1,4 @@
-# Martí Gelabert Gómez
-
+# Second Try
 import cv2
 import numpy as np
 from pathlib import Path
@@ -25,6 +24,47 @@ def loadImages(folder_dir: str, extension: str, color=1) -> np.ndarray:
     return images, names
 
 
+def img2lab(imgs):
+    return [cv2.cvtColor(i, cv2.COLOR_BGR2LAB) for i in imgs]
+
+
+def showLAB(img):
+    plt.imshow(cv2.cvtColor(img, cv2.COLOR_LAB2RGB))
+    plt.show()
+
+
+def showLAB2(img1, img2):
+    f = plt.figure()
+    f.add_subplot(1, 2, 1)
+    plt.imshow(cv2.cvtColor(img1, cv2.COLOR_LAB2RGB))
+    f.add_subplot(1, 2, 2)
+    plt.imshow(cv2.cvtColor(img2, cv2.COLOR_LAB2RGB))
+    plt.show(block=True)
+
+
+def CLAHE_overL(imagesLAB):
+    clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
+    output = []
+    for img in imagesLAB:
+        cp = img.copy()
+        cp[:, :, 0] = clahe.apply(img[:, :, 0])
+        output.append(cp)
+    return output
+
+
+def substraction(images, avg):
+    return [cv2.subtract(avg, img) for img in images]
+
+
+def avg_imgs(images):
+    return np.sum(images, 0) / len(images)
+
+
+def sameImage(img1, img2):
+    difference = cv2.subtract(img1, img2)
+    b, g, r = cv2.split(difference)
+    return cv2.countNonZero(b) == 0 and cv2.countNonZero(g) == 0 and cv2.countNonZero(r) == 0
+
 def resize(img):
     """Method for resizing images - DEBUG"""
     scale_percent = 60  # percent of original size
@@ -32,23 +72,18 @@ def resize(img):
     height = int(img.shape[0] * scale_percent / 100)
     dim = (width, height)
 
-    # resize image
-    return cv2.resize(img, dim, interpolation=cv2.INTER_AREA)
+def normalize(data):
 
+    info = np.finfo(data.dtype)  # Get the information of the incoming image type
+    aux = data.astype(np.float64) / info.max  # normalize the data to 0 - 1
+    aux = 255 * data  # Now scale by 255
+    img = aux.astype(np.uint8)
+    return img
 
-def wimgs(imgs, names, folder):
-    """Method for saving a list of images given their names and folder path"""
-    if not os.path.exists(folder):
-        os.makedirs(folder)
-    else:
-        shutil.rmtree(folder)
-        os.makedirs(folder)
-
-    for i in range(len(imgs)):
-        cv2.imwrite(os.path.join(folder, names[i].split('/')[1]), imgs[i])
 
 
 if __name__ == '__main__':
+
     parser = argparse.ArgumentParser(description='A simple program for person '
                                      + 'detectection and crowd counting in '
                                      + 'beautiful pictures!')
@@ -70,36 +105,37 @@ if __name__ == '__main__':
     _empty_dir = parser.parse_args().empty
     extension = parser.parse_args().extension
 
-    # Load the images in gray scale.
-    images, _fileNames = loadImages(folder_dir, extension, 0)
-
-    # Just the names of the files withouth the path dir attached
+    images, _fileNames = loadImages(folder_dir, extension, 1)
+    imagesLAB = img2lab(images)
+    CLAHEimagesLAB = CLAHE_overL(imagesLAB)
     names = [i.split('/')[1] for i in _fileNames]
+    # showLAB2(imagesLAB[1], CLAHEimagesLAB[1])
 
-    wimgs(images, _fileNames, 'gen/gray')
+    # print(CLAHEimagesLAB[1][0].dtype)
+    # uint8
+    
+    average = np.sum(CLAHEimagesLAB, 0) / len(images)
+    # showLAB(average.astype(np.uint8))
 
-    # For the output plot
-    images_color, _ = loadImages(folder_dir, extension, 1)
+    # blur_average = cv2.GaussianBlur(average, (5, 5), 0)
+    blur_average = cv2.blur(average, (25, 25))
+    #showLAB(blur_average.astype(np.uint8))
 
-    # We need the iluminations of the images to be uniform
-    # this way we will be able to substract the background
-    # with a more consistent ilumination though the images
+    CLAHEimagesLAB = [im.astype(np.float64) for im in CLAHEimagesLAB]
 
-    clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
-    _empty = clahe.apply(cv2.imread(_empty_dir, 0))
+    foreground = substraction(CLAHEimagesLAB, blur_average)
 
-    # Applying Adaptative Histogram Equalization
-    # between the images will make the ilumination more consistent.
-    images_equ = [clahe.apply(img) for img in images]
-    wimgs(images_equ, _fileNames, 'gen/equ')
+    uintfg = [cv2.normalize(src=im, dst=None, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_8U) for im in foreground]
 
-    # Using the empty image we obtain better results
-    _empty = cv2.GaussianBlur(_empty, (15, 15), 0)
+    gray = [cv2.cvtColor(cv2.cvtColor(im, cv2.COLOR_LAB2BGR), cv2.COLOR_BGR2GRAY) for im in uintfg]
 
-    # substraction between avg and the images with CLAHE applyed
-    sub = [cv2.subtract(_empty, equ) for equ in images_equ]
+    # bin = [cv2.threshold(g,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)[1] for g in gray]
+    bin = [cv2.threshold(g,200,255,cv2.THRESH_BINARY)[1] for g in gray]
+    # bin = [cv2.adaptiveThreshold( g,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY,11,2) for g in gray]
 
-    bin = [cv2.threshold(s, 100, 255, cv2.THRESH_BINARY)[1] for s in sub]
+    for i in range(10):
+        plt.imshow(bin[i], cmap='gray')
+        plt.show()    
 
     # Aplication of a binary mask to the already binarized images
     mask = cv2.imread('mask.png', 0) / 255.0
@@ -108,11 +144,6 @@ if __name__ == '__main__':
 
     dil = [cv2.dilate(b, np.ones((10, 10), np.uint8), iterations=1)
            for b in bin]
-
-    # Saving images on disk
-    wimgs(sub, _fileNames, 'gen/sub')
-    wimgs(bin, _fileNames, 'gen/bin')
-    wimgs(dil, _fileNames, 'gen/dil')
 
     # here we will have the contours of the multiple images we have
     contours_images = [cv2.findContours(d, cv2.RETR_TREE,
@@ -128,9 +159,7 @@ if __name__ == '__main__':
                         'gt': [],  # ground th
                         'filter_rois': [],  # the rois we end up with
                         'num_det':  0,
-                        'num_matching':  0,
                         'real_det': 0,
-                        'notusefull': [],
                         'n_filtered': 0,  # In case we have some bbox deleted 
                     }) for i in names)
 
@@ -138,7 +167,7 @@ if __name__ == '__main__':
     # the rois
     for i in range(len(images)):
         det_frame = []
-        img = images_color[i].copy()
+        img = images[i].copy()
         data[names[i]]['image_name'] = names[i]
         for c in contours_images[i]:
             x, y, w, h = cv2.boundingRect(c)
@@ -147,8 +176,6 @@ if __name__ == '__main__':
             img = cv2.rectangle(img, (x, y), (x + w, y + h), (0, 0, 255), 2)
         det.append(det_frame)  # Set of coordenates split by frame
         img_det.append(img)  # images
-
-    wimgs(img_det, _fileNames, 'gen/det')
 
     # loading the labels for the images
     df = pd.read_csv('final_labels_gelabert_person_counter.csv',
@@ -173,7 +200,7 @@ if __name__ == '__main__':
     filtered_imgs = []
     for i in range(len(_fileNames)):
         file = _fileNames[i].split('/')[1]
-        img = images_color[i].copy()
+        img = images[i].copy()
 
         # Checking for all labels which bounding boxes contain her
         for coord in data[file]['gt']:
@@ -181,8 +208,6 @@ if __name__ == '__main__':
                 # if roi not too big or really small chech it
                 if ((w < images[0].shape[0]/3 and h < images[0].shape[1]/3)
                         or (w < 2 or h < 2)):
-                    # Just saving if its valid or not
-                    data[file]['num_det'] += 1
                     if (coord[0] >= x and coord[0] <= x+w and coord[1] >= y and
                        coord[1] <= y+h):
                         img = cv2.rectangle(img, (x, y), (x + w, y + h),
@@ -190,62 +215,40 @@ if __name__ == '__main__':
                         img = cv2.circle(img, coord,
                                          1, (255, 0, 0), 3)
                         data[file]['filter_rois'].append((x, y, w, h))
-                        data[file]['num_matching'] += 1
-                        
+                        data[file]['num_det'] += 1
+
                         # If it contains at least one label we will count it
                         # as detection. We will loose all extra labels inside
                         # but this algorithm can't
                         # perform any better with the current configuration
-                        break
+                        #break
                 else:
-                    if (x, y, w, h) not in data[file]['notusefull']:
-                        data[file]['notusefull'].append((x, y, w, h))
-                    
+                    data[file]['n_filtered'] += 1
         filtered_imgs.append(img)
 
-    MSE = 0.0
+    MAE = 0.0
 
     rows = 2
     cols = 2
-
-    wimgs(filtered_imgs, _fileNames, 'gen/match')
 
     for i in range(len(images)):
 
         if _empty_dir == 'Gelabert/'+data[names[i]]['image_name']:
             print('Not computing empty image...')
         else:
-            tp = len(data[names[i]]['filter_rois'])
-            fp = len(data[names[i]]['rois']) - len(data[names[i]]['filter_rois']) - len(data[names[i]]['notusefull']) 
-            precission =  tp / (tp + fp)
-            
+            precission = data[names[i]]['num_det'] / (len(data[
+                                                      names[i]]['rois']) -
+                                                      data[file]['n_filtered'])
+
             print("File -> ", data[names[i]]['image_name'], ' Precission = ',
                   precission,
                   " | ",
-                  (tp + fp), " of ",
-                  data[names[i]]['real_det'], ' real detections where matched', tp)
+                  data[names[i]]['num_det'], " of ",
+                  data[names[i]]['real_det'], ' detections')
 
-            MSE += (data[names[i]]['real_det'] - (tp + fp))**2
             if parser.parse_args().plot:
-                plt.rcParams["figure.figsize"] = (15, 15)
-                fig, axs = plt.subplots(rows, cols, dpi=150)
 
-                axs[0, 0].imshow(resize(images[i]), cmap='gray')
-                axs[0, 0].set_title("original image")
+                cv2.imshow("filtered", filtered_imgs[i])
+                cv2.imshow("non-filter", img_det[i])
+                cv2.waitKey(0)
 
-                axs[1, 0].imshow(resize(sub[i]), cmap='gray')
-                axs[1, 0].set_title("cv2.substract(_empty,original_image)")
-                axs[1, 0].sharex(axs[0, 0])
-
-                axs[0, 1].imshow(resize(cv2.cvtColor(filtered_imgs[i],
-                                        cv2.COLOR_BGR2RGB)))
-                axs[0, 1].set_title("Clean detections")
-
-                axs[1, 1].imshow(resize(cv2.cvtColor(img_det[i],
-                                        cv2.COLOR_BGR2RGB)))
-                axs[1, 1].set_title("Non-filtered detections")
-                fig.tight_layout()
-                plt.show()
-            
-    MSE = MSE / (len(images)-1)  # We are not computing the empty one
-    print('MSE = ', MSE)
