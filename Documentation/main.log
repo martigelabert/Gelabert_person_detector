@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2022.11.13)  24 NOV 2022 02:39
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2022.11.13)  24 NOV 2022 02:55
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -540,26 +540,19 @@ LaTeX Warning: `h' float specifier changed to `ht'.
 File: img/avg.png Graphic file (type png)
 <use img/avg.png>
 Package pdftex.def Info: img/avg.png  used on input line 160.
-(pdftex.def)             Requested size: 483.69687pt x 272.07048pt.
-
-
-LaTeX Warning: `h' float specifier changed to `ht'.
-
+(pdftex.def)             Requested size: 435.32422pt x 244.86012pt.
 
 Underfull \hbox (badness 10000) in paragraph at lines 168--169
 
  []
 
-
-LaTeX Warning: No positions in optional float specifier.
-               Default added (so using `tbp') on input line 170.
-
-<img/back_blur.png, id=95, 1927.2pt x 1084.05pt>
+[3 <./img/equ/1660284000.jpg> <./img/equ/1660287600.jpg> <./img/equ/1660302000.jpg> <../gen/gray/1660284000.jpg> <../gen/gray/1660287600.jpg> <../gen/gray/1660302000.jpg> <./img/avg.png (PNG copy)>]
+<img/back_blur.png, id=101, 1927.2pt x 1084.05pt>
 File: img/back_blur.png Graphic file (type png)
 <use img/back_blur.png>
 Package pdftex.def Info: img/back_blur.png  used on input line 172.
-(pdftex.def)             Requested size: 483.69687pt x 272.07048pt.
-<img/sub.jpg, id=97, 1927.2pt x 1084.05pt>
+(pdftex.def)             Requested size: 435.32422pt x 244.86012pt.
+<img/sub.jpg, id=103, 1927.2pt x 1084.05pt>
 File: img/sub.jpg Graphic file (type jpg)
 <use img/sub.jpg>
 Package pdftex.def Info: img/sub.jpg  used on input line 188.
@@ -574,31 +567,28 @@ Underfull \hbox (badness 10000) in paragraph at lines 197--198
 
  []
 
-[3 <./img/equ/1660284000.jpg> <./img/equ/1660287600.jpg> <./img/equ/1660302000.jpg> <../gen/gray/1660284000.jpg> <../gen/gray/1660287600.jpg> <../gen/gray/1660302000.jpg>] [4 <./img/avg.png (PNG copy)> <./img/back_blur.png (PNG copy)>] [5 <./img/sub.jpg>]
-<img/OTSU_sub_arena.jpg, id=115, 1927.2pt x 1084.05pt>
+<img/OTSU_sub_arena.jpg, id=105, 1927.2pt x 1084.05pt>
 File: img/OTSU_sub_arena.jpg Graphic file (type jpg)
 <use img/OTSU_sub_arena.jpg>
 Package pdftex.def Info: img/OTSU_sub_arena.jpg  used on input line 204.
 (pdftex.def)             Requested size: 483.69687pt x 272.07048pt.
-<img/bin_th.jpg, id=117, 1927.2pt x 1084.05pt>
+[4 <./img/back_blur.png (PNG copy)>] [5 <./img/sub.jpg> <./img/OTSU_sub_arena.jpg>]
+<img/bin_th.jpg, id=118, 1927.2pt x 1084.05pt>
 File: img/bin_th.jpg Graphic file (type jpg)
 <use img/bin_th.jpg>
 Package pdftex.def Info: img/bin_th.jpg  used on input line 215.
 (pdftex.def)             Requested size: 483.69687pt x 272.07048pt.
-<../mask.png, id=119, 462.528pt x 260.172pt>
+<../mask.png, id=120, 462.528pt x 260.172pt>
 File: ../mask.png Graphic file (type png)
 <use ../mask.png>
 Package pdftex.def Info: ../mask.png  used on input line 225.
 (pdftex.def)             Requested size: 483.69687pt x 272.09294pt.
-<img/dil.jpg, id=122, 1927.2pt x 1084.05pt>
+<img/dil.jpg, id=123, 1927.2pt x 1084.05pt>
 File: img/dil.jpg Graphic file (type jpg)
 <use img/dil.jpg>
 Package pdftex.def Info: img/dil.jpg  used on input line 235.
 (pdftex.def)             Requested size: 483.69687pt x 272.07048pt.
- [6
-
- <./img/OTSU_sub_arena.jpg>] [7 <./img/bin_th.jpg> <../mask.png>]
-<img/det_name.jpg, id=138, 1927.2pt x 1084.05pt>
+<img/det_name.jpg, id=125, 1927.2pt x 1084.05pt>
 File: img/det_name.jpg Graphic file (type jpg)
 <use img/det_name.jpg>
 Package pdftex.def Info: img/det_name.jpg  used on input line 245.
@@ -608,7 +598,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 251--252
 
  []
 
-[8] [9 <./img/dil.jpg> <./img/det_name.jpg>]
+[6 <./img/bin_th.jpg>] [7 <../mask.png> <./img/dil.jpg>] [8 <./img/det_name.jpg>]
 Underfull \hbox (badness 10000) in paragraph at lines 273--274
 
  []
@@ -628,7 +618,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 287--288
 
  []
 
-[10] Excluding 'comment' comment. Excluding 'comment' comment. [11] (./main.aux)
+Excluding 'comment' comment. Excluding 'comment' comment. [9] (./main.aux)
 
 LaTeX Warning: There were multiply-defined labels.
 
@@ -636,18 +626,18 @@ Package rerunfilecheck Info: File `main.out' has not changed.
 (rerunfilecheck)             Checksum: 5152D8C87766874BD1AB2C6CC8058CB8;1539.
  ) 
 Here is how much of TeX's memory you used:
- 14465 strings out of 478287
- 244632 string characters out of 5849288
+ 14463 strings out of 478287
+ 244618 string characters out of 5849288
  729437 words of memory out of 5000000
  32400 multiletter control sequences out of 15000+600000
  473981 words of font info for 44 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  67i,8n,77p,999b,487s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
-Output written on main.pdf (11 pages, 5643818 bytes).
+Output written on main.pdf (9 pages, 5643485 bytes).
 PDF statistics:
- 201 PDF objects out of 1000 (max. 8388607)
- 155 compressed objects within 2 object streams
- 42 named destinations out of 1000 (max. 500000)
+ 193 PDF objects out of 1000 (max. 8388607)
+ 149 compressed objects within 2 object streams
+ 40 named destinations out of 1000 (max. 500000)
  169 words of extra memory for PDF output out of 10000 (max. 10000000)
 

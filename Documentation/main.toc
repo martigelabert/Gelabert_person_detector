@@ -2,10 +2,10 @@
 \contentsline {section}{\numberline {2}General Procedure}{1}{section.2}%
 \contentsline {section}{\numberline {3}algorithms}{2}{section.3}%
 \contentsline {subsection}{\numberline {3.1}Background Removal}{2}{subsection.3.1}%
-\contentsline {subsection}{\numberline {3.2}Binarization}{3}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.2}Binarization}{4}{subsection.3.2}%
 \contentsline {subsection}{\numberline {3.3}Dilation}{6}{subsection.3.3}%
-\contentsline {subsection}{\numberline {3.4}Find contours}{8}{subsection.3.4}%
-\contentsline {subsection}{\numberline {3.5}Matching Algorithm}{8}{subsection.3.5}%
-\contentsline {section}{\numberline {4}Results Analysis}{10}{section.4}%
-\contentsline {section}{\numberline {5}Is a different aproach capable of improving our results?}{10}{section.5}%
-\contentsline {section}{\numberline {6}Conclusions}{10}{section.6}%
+\contentsline {subsection}{\numberline {3.4}Find contours}{6}{subsection.3.4}%
+\contentsline {subsection}{\numberline {3.5}Matching Algorithm}{6}{subsection.3.5}%
+\contentsline {section}{\numberline {4}Results Analysis}{8}{section.4}%
+\contentsline {section}{\numberline {5}Is a different aproach capable of improving our results?}{9}{section.5}%
+\contentsline {section}{\numberline {6}Conclusions}{9}{section.6}%
