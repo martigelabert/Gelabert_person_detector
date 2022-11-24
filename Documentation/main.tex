@@ -7,7 +7,7 @@
     %Material for the oral presentation (slides), which should focus on the process: what decisions were taken and why, which strengths/shortcomings were found, and a critical discussions of the results.
 
 %https://en.wikibooks.org/wiki/LaTeX/Document_Structure
-\documentclass[10pt]{article}
+\documentclass[11pt]{article}
 \usepackage{blindtext}
 \usepackage{titlesec}
 \setcounter{tocdepth}{3}
@@ -28,7 +28,17 @@
 \usepackage{xparse}
 \usepackage{csvsimple, booktabs}
 
+\usepackage[toc]{appendix}
+\usepackage{mwe}
+\usepackage{float} % Figure placement "Here".
+
+\usepackage{appendix}
+
+\usepackage{fancyhdr} % headers and footers
+\pagestyle{fancy}
+
 \usepackage{afterpage}
+
 % thanks
 % https://tex.stackexchange.com/questions/11366/how-can-i-get-the-figures-not-to-be-pushed-to-the-end-of-the-document
 \renewcommand{\topfraction}{.85}
@@ -47,8 +57,6 @@
 }
 
 \lstset{language=Python,keywordstyle={\bfseries \color{blue}}}
-
-
 
 \begin{document}
 
@@ -155,24 +163,24 @@ In the case of our problem, first we have imported all the images in black and w
 
 For the selection of our background image, in a starting point the \textbf{average image} was computed as the main way for accomplish foreground extraction, but the resulting image generally was really noisy and with ghosting effect very present on it, which decreased the performance of the algorithm as it can bee seen on the Figure \ref{fig:avg}. Even with a gaussian blur applyed to try to counter the ghosty figures, they are still really present on the image. The image averaging is a good idea generally for noise reduction and in this case to try to obtain a neutral image were the background is predominant, but there is not enought images to obtain a more sharp image to really have a good background. Therefore, we \textbf{end up} using the image 1660284000.jpg with a gaussian blur applyed as our background, this way we obtain better results on the \textbf{binarization process}.
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.9\textwidth]{img/avg.png}
-    \caption{Average image with a gaussian blur applyed with a kernel of (11,11)}
-    \label{fig:avg}
-\end{figure}
+%\begin{figure}[h]
+%    \centering
+%    \includegraphics[width=0.9\textwidth]{img/avg.png}
+%    \caption{Average image with a gaussian blur applyed with a kernel of (11,11)}
+%    \label{fig:avg}
+%\end{figure}
 
 
 
 \subsubsection*{Gaussian Blur}
 With an image already selected for the image background, it is applyed a gaussian filtering with a kernel of size (7,7), this way  we can obtain a more standard image, and get a more smuthered image that will allow the algorithm to contrast slightly better our foreground.\newline
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.9\textwidth]{img/back_blur.png}
-    \caption{Gaussian Blur Applyed with a kernel of size (7,7)}
-    \label{fig:gaussian}
-\end{figure}
+%\begin{figure}[h]
+%    \centering
+%    \includegraphics[width=0.9\textwidth]{img/back_blur.png}
+%    \caption{Gaussian Blur Applyed with a kernel of size (7,7)}
+%    \label{fig:gaussian}
+%\end{figure}
 
 
 
@@ -183,12 +191,12 @@ The ending size used for gaussian blur was obtained by trial and error experimen
 
 Once we have selected our background and applyed the preprocessing, we should substract it to every image, this way, the result we end up with is the foreground (in this case the persons and some residuals) highlighted as we can see in the figure \ref{fig:sub}. 
 
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{img/sub.jpg}
-    \caption{Image obtained by applying cv2.subtract(background, image)}
-    \label{fig:sub}
-\end{figure}
+%\begin{figure}[h]
+%    \centering
+%    \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{img/sub.jpg}
+%    \caption{Image obtained by applying cv2.subtract(background, image)}
+%    \label{fig:sub}
+%\end{figure}
 
 
 \subsection{Binarization}
@@ -197,61 +205,44 @@ Once the substraction has been aplyed to all images, the resulting foreground wi
 The problem with using OTSU is that for each images it obtains a threshold selection automatically, and this should not be a problem, and sometimes could perform better than a fixed one. But for the samples tested there are a lot of artifacts related to the shadow casting of the image, as it can be seen in the figure \ref{fig:otsu_bin}. The problems are seen on the bottom of the image, where there are an amount of shadows casted by the sand crests which can be a bit annoying for the next steps.\newline
 
 
-%THRESH\_OTSU funciona bien salvo en los casos donde empieza a haber sompras en la imagen, a la hora de aplicar el thresholding obtendremos un jnúmero muy grande de falsos positivos en las pequeñas montaás que hace la arena, las dimensionas que tienen son similares a las de una cabeza humana por lo que si las eliminasemos estariamos eliminando buenas deteccionas.
+%\begin{figure}[h]
+%    \centering
+%    \includegraphics[width=\textwidth]{img/OTSU_sub_arena.jpg}
+%    \caption{Binarized image using OTSU and the empty beach image}
+%    \label{fig:otsu_bin}
+%\end{figure}
 
-\begin{figure} [hp]
-    \centering
-    \includegraphics[width=\textwidth]{img/OTSU_sub_arena.jpg}
-    \caption{Binarized image using OTSU and the empty beach image}
-    \label{fig:otsu_bin}
-\end{figure}
+%\FloatBarrier
 
 
 By using a set thresholding we are loosing some flexibility and a fixed values could not be the wiser idea, but in this case using a tigth threshold may be the best decision as may reduce the number of false detections considerably. In this case the values selected are setted in the instruction \codeword{cv2.threshold(substracted, 100, 255, cv2.THRESH_BINARY)}. The resulting image can be shown in figure \ref{fig:binth}.
 
 
-\begin{figure} [hp]
-    \centering
-    \includegraphics[width=\textwidth]{img/bin_th.jpg}
-    \caption{Binarized image using a fix thresholding method}
-    \label{fig:binth}
-\end{figure}
+%\begin{figure} [hp]
+%    \centering
+%    \includegraphics[width=\textwidth]{img/bin_th.jpg}
+%    \caption{Binarized image using a fix thresholding method}
+%    \label{fig:binth}
+%\end{figure}
 
 \subsubsection*{Masking}
 For a better filtrage of our data, we will be using a binary mask to get rid of centain areas of the image where we can get non-persons in the foreground (i.e the quay part) and those areas where there is to much information to get clear data about it. We can see the last case in the umbrella section of the beach and the pavement area, where there are too many persons overlaping each others. The mask applyed can be seen in the figure \ref{fig:mask_ex}.
 
-\begin{figure} [hp]
-    \centering
-    \includegraphics[width=\textwidth]{../mask.png}
-    \caption{Binary image}
-    \label{fig:mask_ex}
-\end{figure}
+
 
 \subsection{Dilation}
 Now, with the image binarized we will a apply a dilation to the image. The dilation will expand the white color on a binarized image, obtaining as results the highlighted areas in form of white chunks as it can be seen on figure \ref{fig:dilation_ex}. With these chunks the countourn detection will obtain better results because they are more clear shapes. This could merge figures into one, so the parameters of the kernel size may be tinkered with to obtain the best performance possible.
 
-\begin{figure} [hp]
-    \centering
-    \includegraphics[width=\textwidth]{img/dil.jpg}
-    \caption{Dilation applyed to the binarized image}
-    \label{fig:dilation_ex}
-\end{figure}
+
 
 \subsection{Find contours}
 Once a binarized image is obtained, there should be a process of contour detection. Here we use the dilated images over the function that openCV provides \codeword{cv2.findContours()}. From this functions, we can extract the bounding boxes that contain each of the object contours. In the figure \ref{fig:detections} appears the image with some bounding boxes applyed.
 
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{img/det_name.jpg}
-    \caption{Output of foreground detector, as it can be seen there are some big detections due to contourn detecting multiple forms as one shape, and some }
-    \label{fig:detections}
-\end{figure}
 
 \subsection{Matching Algorithm}
 For convenience, we will cuantify our detection accuracy using the some "incorrect" assumptions. We will be checking if the bounding box contain labels, only one label containing will be assigned to that bounding box. In the case we would have a really big box keeping a lot of detection we will not count that as correct, but in the cases where it may contain a region of 4 or 5 persons because they are really close to each other, we would be more flexibles.\newline
 
 For checking the dimensionality of the bounding box, we would assume that width or height higher than a third of the image will not be acceptable, and the same for the ones no more than two pixels size. 
-
 \section{Results Analysis}
 
 \begin{table} [hp]
@@ -259,6 +250,13 @@ For checking the dimensionality of the bounding box, we would assume that width 
     \caption[Performance metrics Basic]{Performance metrics using the propossed algorithm}\label{table:metrics}
 \csvautobooktabular{../metrics.csv}
 \end{table}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{img/det_name.jpg}
+    \caption{Output of foreground detector, as it can be seen there are some big detections due to contourn detecting multiple forms as one shape, and some }
+    \label{fig:detections}
+\end{figure}
 
 
 \section{Is a different aproach capable of improving our results?}
@@ -287,38 +285,60 @@ As we could be expecting, the performance is not really good compared to a neura
 The use of background subtraction to try to extract completely our foreground is a tricky task, because using an averaged image could allow to have an image with the solid background on it, but it works better when we dispose with a lot of images. With just the images from the 'Gelabert' folder the image generated was not clear enought (even with some pprocessing) to accomplish the objective and in the end jsut using the emtyes image was the one given the best performance.\newline
 
 
+\newpage
+\begin{appendices}
+    \section{Images related to the basic Algorithm}
+    % the \\ insures the section title is centered below the phrase: AppendixA
 
-
-\begin{comment}
-    - No functions tamb
-\end{comment}
-
-\begin{comment}
     
-\section{Gabor Filter}
 
-%Think as Gabor as a Gaussian filter in 2D.
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=\textwidth, height=\textheight, keepaspectratio]{img/sub.jpg}
+        \caption{Image obtained by applying cv2.subtract(background, image)}
+        \label{fig:sub}
+    \end{figure}
 
+    \begin{figure} [h]
+        \centering
+        \includegraphics[width=\textwidth]{img/bin_th.jpg}
+        \caption{Binarized image using a fix thresholding method}
+        \label{fig:binth}
+    \end{figure}
+    
+    \begin{figure} [h]
+        \centering
+        \includegraphics[width=\textwidth]{../mask.png}
+        \caption{Mask image}
+        \label{fig:mask_ex}
+    \end{figure}
+    
+    \begin{figure} [h]
+        \centering
+        \includegraphics[width=\textwidth]{img/dil.jpg}
+        \caption{Dilation applyed to the binarized image}
+        \label{fig:dilation_ex}
+    \end{figure}
+    
+    
 
-A band pass filter generated by a function of various parameters.
+    \section{Complementary Images}
+    
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.9\textwidth]{img/avg.png}
+        \caption{Average image with a gaussian blur applyed with a kernel of (11,11)}
+        \label{fig:avg}
+    \end{figure}
 
-\begin{equation}
-    filter(x,y;\sigma,\theta,\lambda,\gamma,\phi) = exp [ - \frac{x^2 - \gamma ^2 \cdot y^2}{2 \sigma^2} ] \cdot exp [ i (2 \pi \frac{x}{\lambda} + \phi) ] 
-\end{equation}
-
-% Large sigma on small feature you will miss
-% Small sigma on ...
-
-The parameters of ksize allows to select the size of our kernel filter, in case we are using a really big shape we will overlook details if the shapes are small. The same reasoning can be applyed with a small filter, may overlook shapes too big for it. Therefore, must be tested with different sizes to reach an idoneal spot, if your features are tiny or bigger, you have to take that in count.
-
-If we are looking for \textbf{horizontal-like} features, applying an horizontal filter will allow us to maintain those characteristics and block the vertical ones and viceversa in the other cases.
-
-
-\section{What form do the People have?}
-
-In general the shapes that a person can describe may suffer alot of distorsion depending of the angle where the frame was took, the person posture, etc. Not always will be a perfet pose to the researchers to easily identify if an object is a person or not. There is no key shape that we could use, but we can try use common sense. The images gathered, are related to people moving standing up, swiming or just taking sunbathing.
-
-\end{comment}
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=\textwidth]{img/OTSU_sub_arena.jpg}
+        \caption{Binarized image using OTSU and the empty beach image}
+        \label{fig:otsu_bin}
+    \end{figure}
+        
+\end{appendices}
 
 
 
