@@ -128,7 +128,7 @@ if __name__ == '__main__':
                         'gt': [],  # ground th
                         'filter_rois': [],  # the rois we end up with
                         'real_det': 0,
-                        'notusefull': [],
+                        'notuseful': [],
                         'n_filtered': 0,  # In case we have some bbox deleted 
                     }) for i in names)
 
@@ -193,8 +193,8 @@ if __name__ == '__main__':
                         # perform any better with the current configuration
                         break
                 else:
-                    if (x, y, w, h) not in data[file]['notusefull']:
-                        data[file]['notusefull'].append((x, y, w, h))
+                    if (x, y, w, h) not in data[file]['notuseful']:
+                        data[file]['notuseful'].append((x, y, w, h))
 
         filtered_imgs.append(img)
 
@@ -205,22 +205,21 @@ if __name__ == '__main__':
 
     wimgs(filtered_imgs, _fileNames, 'gen/match')
 
-    metrics = {'files': names, 'precission': [], 'recall': [], 'f1': [],
+    metrics = {'files': names.copy(), 'precission': [], 'recall': [], 'f1 score': [],
                'gt': [], 'detected': [], 'matched': []}
 
     for i in range(len(images)):
 
         if _empty_dir == 'Gelabert/'+data[names[i]]['image_name']:
             print('Not computing empty image...')
-            metrics['precission'].append(0)
-            metrics['recall'].append(0)
-            metrics['f1'].append(0)
-            metrics['gt'].append(0)
-            metrics['detected'].append(0)
-            metrics['matched'].append(0)
+            metrics['files'].remove(data[names[i]]['image_name'])
+
         else:
+            # The rois that contains at least one label
             tp = len(data[names[i]]['filter_rois'])
-            fp = len(data[names[i]]['rois']) - len(data[names[i]]['filter_rois']) - len(data[names[i]]['notusefull']) 
+
+            # All those rois that you have withouth the filtered ones
+            fp = len(data[names[i]]['rois']) - len(data[names[i]]['filter_rois']) - len(data[names[i]]['notuseful']) 
             precission = tp / (tp + fp)
 
             fn = len(data[names[i]]['gt']) - len(data[names[i]]['filter_rois'])
@@ -231,7 +230,7 @@ if __name__ == '__main__':
 
             metrics['precission'].append(precission)
             metrics['recall'].append(recall)
-            metrics['f1'].append(f1)
+            metrics['f1 score'].append(f1)
             metrics['gt'].append(len(data[names[i]]['gt']))
             metrics['detected'].append(tp + fp)
             metrics['matched'].append(tp)
@@ -257,7 +256,8 @@ if __name__ == '__main__':
                 axs[1, 1].set_title("Non-filtered detections")
                 fig.tight_layout()
                 plt.show()
-
-    print(pd.DataFrame.from_dict(metrics))
+    df = pd.DataFrame.from_dict(metrics)
+    print(df)
+    df.to_csv('metrics.csv', index=False, float_format='%.3f')
     MSE = MSE / (len(images)-1)  # We are not computing the empty one
     print('MSE = ', MSE)

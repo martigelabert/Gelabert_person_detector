@@ -26,6 +26,21 @@
 \usepackage{listings}
 \usepackage[section]{placeins}
 \usepackage{xparse}
+\usepackage{csvsimple, booktabs}
+
+\usepackage{afterpage}
+% thanks
+% https://tex.stackexchange.com/questions/11366/how-can-i-get-the-figures-not-to-be-pushed-to-the-end-of-the-document
+\renewcommand{\topfraction}{.85}
+\renewcommand{\bottomfraction}{.7}
+\renewcommand{\textfraction}{.15}
+\renewcommand{\floatpagefraction}{.66}
+\renewcommand{\dbltopfraction}{.66}
+\renewcommand{\dblfloatpagefraction}{.66}
+\setcounter{topnumber}{9}
+\setcounter{bottomnumber}{9}
+\setcounter{totalnumber}{20}
+\setcounter{dbltopnumber}{9}
 
 \NewDocumentCommand{\codeword}{v}{%
 \texttt{\textcolor{black}{#1}}%
@@ -135,27 +150,31 @@ In the case of our problem, first we have imported all the images in black and w
   \caption{Images from Gelabert folder where the first row presents a more uniform ilumination across frames ompared with the second row images.}
 \end{figure}
 
-
+\FloatBarrier
 \subsubsection*{Background Image}
 
 For the selection of our background image, in a starting point the \textbf{average image} was computed as the main way for accomplish foreground extraction, but the resulting image generally was really noisy and with ghosting effect very present on it, which decreased the performance of the algorithm as it can bee seen on the Figure \ref{fig:avg}. Even with a gaussian blur applyed to try to counter the ghosty figures, they are still really present on the image. The image averaging is a good idea generally for noise reduction and in this case to try to obtain a neutral image were the background is predominant, but there is not enought images to obtain a more sharp image to really have a good background. Therefore, we \textbf{end up} using the image 1660284000.jpg with a gaussian blur applyed as our background, this way we obtain better results on the \textbf{binarization process}.
 
-\begin{figure}[htb]
+\begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{img/avg.png}
     \caption{Average image with a gaussian blur applyed with a kernel of (11,11)}
     \label{fig:avg}
 \end{figure}
 
+\afterpage{\FloatBarrier}
+
 \subsubsection*{Gaussian Blur}
 With an image already selected for the image background, it is applyed a gaussian filtering with a kernel of size (7,7), this way  we can obtain a more standard image, and get a more smuthered image that will allow the algorithm to contrast slightly better our foreground.\newline
 
-\begin{figure}[h]
+\begin{figure}[]
     \centering
     \includegraphics[width=\textwidth]{img/back_blur.png}
     \caption{Gaussian Blur Applyed with a kernel of size (7,7)}
     \label{fig:gaussian}
 \end{figure}
+
+
 
 The ending size used for gaussian blur was obtained by trial and error experimentation, and could be changed to get different ending behaveours.
 
@@ -180,7 +199,7 @@ The problem with using OTSU is that for each images it obtains a threshold selec
 
 %THRESH\_OTSU funciona bien salvo en los casos donde empieza a haber sompras en la imagen, a la hora de aplicar el thresholding obtendremos un jnúmero muy grande de falsos positivos en las pequeñas montaás que hace la arena, las dimensionas que tienen son similares a las de una cabeza humana por lo que si las eliminasemos estariamos eliminando buenas deteccionas.
 
-\begin{figure}[htb]
+\begin{figure} [hp]
     \centering
     \includegraphics[width=\textwidth]{img/OTSU_sub_arena.jpg}
     \caption{Binarized image using OTSU and the empty beach image}
@@ -191,7 +210,7 @@ The problem with using OTSU is that for each images it obtains a threshold selec
 By using a set thresholding we are loosing some flexibility and a fixed values could not be the wiser idea, but in this case using a tigth threshold may be the best decision as may reduce the number of false detections considerably. In this case the values selected are setted in the instruction \codeword{cv2.threshold(substracted, 100, 255, cv2.THRESH_BINARY)}. The resulting image can be shown in figure \ref{fig:binth}.
 
 
-\begin{figure}[htb]
+\begin{figure} [hp]
     \centering
     \includegraphics[width=\textwidth]{img/bin_th.jpg}
     \caption{Binarized image using a fix thresholding method}
@@ -201,7 +220,7 @@ By using a set thresholding we are loosing some flexibility and a fixed values c
 \subsubsection*{Masking}
 For a better filtrage of our data, we will be using a binary mask to get rid of centain areas of the image where we can get non-persons in the foreground (i.e the quay part) and those areas where there is to much information to get clear data about it. We can see the last case in the umbrella section of the beach and the pavement area, where there are too many persons overlaping each others. The mask applyed can be seen in the figure \ref{fig:mask_ex}.
 
-\begin{figure}[htb]
+\begin{figure} [hp]
     \centering
     \includegraphics[width=\textwidth]{../mask.png}
     \caption{Binary image}
@@ -211,7 +230,7 @@ For a better filtrage of our data, we will be using a binary mask to get rid of 
 \subsection{Dilation}
 Now, with the image binarized we will a apply a dilation to the image. The dilation will expand the white color on a binarized image, obtaining as results the highlighted areas in form of white chunks as it can be seen on figure \ref{fig:dilation_ex}. With these chunks the countourn detection will obtain better results because they are more clear shapes. This could merge figures into one, so the parameters of the kernel size may be tinkered with to obtain the best performance possible.
 
-\begin{figure}[htb]
+\begin{figure} [hp]
     \centering
     \includegraphics[width=\textwidth]{img/dil.jpg}
     \caption{Dilation applyed to the binarized image}
@@ -235,6 +254,11 @@ For checking the dimensionality of the bounding box, we would assume that width 
 
 \section{Results Analysis}
 
+\begin{table} [hp]
+    \centering
+    \caption[Performance metrics Basic]{Performance metrics using the propossed algorithm}\label{table:metrics}
+\csvautobooktabular{../metrics.csv}
+\end{table}
 
 
 \section{Is a different aproach capable of improving our results?}
