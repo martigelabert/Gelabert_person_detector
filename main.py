@@ -205,21 +205,36 @@ if __name__ == '__main__':
 
     wimgs(filtered_imgs, _fileNames, 'gen/match')
 
+    metrics = {'files': names, 'precission': [], 'recall': [], 'f1': [],
+               'gt': [], 'detected': [], 'matched': []}
+
     for i in range(len(images)):
 
         if _empty_dir == 'Gelabert/'+data[names[i]]['image_name']:
             print('Not computing empty image...')
+            metrics['precission'].append(0)
+            metrics['recall'].append(0)
+            metrics['f1'].append(0)
+            metrics['gt'].append(0)
+            metrics['detected'].append(0)
+            metrics['matched'].append(0)
         else:
             tp = len(data[names[i]]['filter_rois'])
             fp = len(data[names[i]]['rois']) - len(data[names[i]]['filter_rois']) - len(data[names[i]]['notusefull']) 
             precission = tp / (tp + fp)
 
-            print("File -> ", data[names[i]]['image_name'], ' Precission = ',
-                  precission,
-                  " | ",
-                  (tp + fp), " of ",
-                  data[names[i]]['real_det'],
-                  ' real detections where matched', tp)
+            fn = len(data[names[i]]['gt']) - len(data[names[i]]['filter_rois'])
+            tn = 0
+            recall = tp / (tp + fn)
+
+            f1 = (precission*recall) / ((precission+recall)/2)
+
+            metrics['precission'].append(precission)
+            metrics['recall'].append(recall)
+            metrics['f1'].append(f1)
+            metrics['gt'].append(len(data[names[i]]['gt']))
+            metrics['detected'].append(tp + fp)
+            metrics['matched'].append(tp)
 
             MSE += (data[names[i]]['real_det'] - (tp + fp))**2
             if parser.parse_args().plot:
@@ -242,6 +257,7 @@ if __name__ == '__main__':
                 axs[1, 1].set_title("Non-filtered detections")
                 fig.tight_layout()
                 plt.show()
-            
+
+    print(pd.DataFrame.from_dict(metrics))
     MSE = MSE / (len(images)-1)  # We are not computing the empty one
     print('MSE = ', MSE)

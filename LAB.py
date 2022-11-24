@@ -51,7 +51,8 @@ def CLAHE_overL(imagesLAB):
         output.append(cp)
     return output
 
-
+# Get euclidian distance for each component
+# sqrt(c1-c2 ² .....)
 def substraction(images, avg):
     return [cv2.subtract(avg, img) for img in images]
 
@@ -79,8 +80,6 @@ def normalize(data):
     aux = 255 * data  # Now scale by 255
     img = aux.astype(np.uint8)
     return img
-
-
 
 if __name__ == '__main__':
 

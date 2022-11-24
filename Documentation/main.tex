@@ -1,4 +1,3 @@
-
 %You should submit:
 
     %Functional source code, in a public github repository,
@@ -57,7 +56,7 @@ The program takes the following steps :
     \item Apply Adaptative Histogram equalization to the images.
     %\item Generate an image from the averaging from all the images we have with the Histogram equalization already applyed.
     \item Substract the background to the images using the image with the background.
-    \item Apply an erosion algorithm to obtain small highlighted areas.
+    %\item Apply an erosion algorithm to obtain small highlighted areas.
     \item Apply a thresholding algorithm to binarize the image.
     \item Apply a dilation operation into the binarized images to expand the whites.
     \item Use a contour algorithm to extract the diferent regions containing persons.
@@ -234,7 +233,30 @@ For convenience, we will cuantify our detection accuracy using the some "incorre
 
 For checking the dimensionality of the bounding box, we would assume that width or height higher than a third of the image will not be acceptable, and the same for the ones no more than two pixels size. 
 
-\section{Results Analysis and Conclusions}
+\section{Results Analysis}
+
+
+
+\section{Is a different aproach capable of improving our results?}
+
+For some of the test that were executed for this assignment, generally the effort was not useful. The following  
+
+
+Ending up in situations where a precise modification to the parameters gave as output really good results only in a set of the images. Usually the over-tunning of some function parameters made really inconsisten outputs that provoked a bad performance.  
+
+
+\subsection*{Color Spacing}
+ For example, one of the aproches taken for background removal, was the use of colored images in the color space of LAB  instead of gray scale. On the paper one may think that the use of color will improve our performance, because of the extra information we are just acquired from free. But in this case the process to obtain our foreground sections were in general less precice, giving as result a lot more objects as foreground, which is not ideal for our case, been a lot of those object just umbrellas and cast shadows.\newline
+
+\subsection*{The problem with shadows}
+
+In general, the sample images follow a consisting landscape withouth heavy cast shadows on the sand, but it is noticeable in some of them and usually they will give you more than one headache.\newline 
+
+We could try to counter some of the cases using a sharpening processes or even more filtering (i.e median filtering), to avoid certain annoience for shadows, but doesn't mean that it will be worth it to apply. We could have the situation again where is really useful for 1 case, but then the rest of images just got obliterated just for applying those transformations.
+
+
+
+\section{Conclusions}
 
 As we could be expecting, the performance is not really good compared to a neural network. There are some cases where we can be completely sure about classifing incorrectly our detection because of how the ground truth is placed, some detections are actually correct but slightly shifted and withouth a manually intervention it is safer to just leave it as 'incorrect'. In general, the amount of false positives increase in function of which process are used but overall the false positives generally concetrates in distance areas where there is a lot of information compacted and the dock area.\newline
 
