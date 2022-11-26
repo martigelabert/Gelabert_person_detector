@@ -2,6 +2,8 @@
 
 \usepackage{subcaption}
 \usepackage{comment}
+\usepackage{csvsimple, booktabs}
+
 
 \usetheme{Warsaw}
 \usecolortheme{wolverine}
@@ -99,7 +101,7 @@
     \end{figure}
 \end{frame}
 
-\section*{Binarization}
+\section{Binarization}
 \begin{frame}
     \frametitle{Binarization}
     \begin{figure}
@@ -117,7 +119,7 @@
     \end{figure}
 \end{frame}
 
-\section*{Dilation}
+\section{Dilation}
 \begin{frame}
     \frametitle{Dilation}
 
@@ -129,7 +131,7 @@
     
 \end{frame}
 
-\section*{Find contours}
+\section{Find contours}
 \begin{frame}
     \frametitle{Find contours}
     \begin{figure}
@@ -138,7 +140,7 @@
     \end{figure}
 \end{frame}
 
-\section*{Real Matching}
+\section{Real Matching}
 \begin{frame}
     \frametitle{Matching}
     \begin{figure}
@@ -147,11 +149,23 @@
     \end{figure}
 \end{frame}
 
+\section{Conclusions}
+\begin{frame}
+    \frametitle{Results}
 
-\section*{Conclusions}
+    \begin{table}
+        \centering
+        \caption[Performance metrics Basic]{Performance metrics using the propossed algorithm (withouth using the empty image)}\label{table:metrics}
+    \csvautobooktabular{../metrics.csv}
+    \end{table}
+
+\end{frame}
+
+
+
 \begin{frame}
     \frametitle{Conclusions}
-    It is not good... but at least does something
+    It is not good... but at least does something.
 \end{frame}
 
 

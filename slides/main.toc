@@ -1,0 +1,6 @@
+\beamer@sectionintoc {2}{Background Removal}{4}{0}{1}
+\beamer@sectionintoc {3}{Binarization}{9}{0}{2}
+\beamer@sectionintoc {4}{Dilation}{11}{0}{3}
+\beamer@sectionintoc {5}{Find contours}{12}{0}{4}
+\beamer@sectionintoc {6}{Real Matching}{13}{0}{5}
+\beamer@sectionintoc {7}{Conclusions}{14}{0}{6}
