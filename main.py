@@ -56,7 +56,7 @@ if __name__ == '__main__':
                         action=argparse.BooleanOptionalAction,
                         help='Plot the results with matplotlib at the end'
                               + 'of the execution')
-    parser.add_argument('-f', '--folder', type=str, default='Gelabert',
+    parser.add_argument('-f', '--folder', type=str, default='Gelabert/',
                         required=False, help='Custom path to the images')
     parser.add_argument('-e', '--extension', type=str, default='*.jpg',
                         required=False,
@@ -126,10 +126,11 @@ if __name__ == '__main__':
                         'image_name': '',
                         'rois': [],
                         'gt': [],  # ground th
+                        'det': [],  # valid detections
                         'filter_rois': [],  # the rois we end up with
-                        'real_det': 0,
-                        'notuseful': [],
-                        'n_filtered': 0,  # In case we have some bbox deleted 
+                        'real_det': 0,  # the numbers of labels on that image
+                        'notuseful': [],  # Coordinates of
+                                          # the discharted rois
                     }) for i in names)
 
     # Loop for fill the data dictionary with
@@ -142,11 +143,7 @@ if __name__ == '__main__':
             x, y, w, h = cv2.boundingRect(c)
             det_frame.append([x, y, w, h])
             data[names[i]]['rois'].append((x, y, w, h))
-            img = cv2.rectangle(img, (x, y), (x + w, y + h), (0, 0, 255), 2)
         det.append(det_frame)  # Set of coordenates split by frame
-        img_det.append(img)  # images
-
-    wimgs(img_det, _fileNames, 'gen/det')
 
     # loading the labels for the images
     df = pd.read_csv('final_labels_gelabert_person_counter.csv',
@@ -158,27 +155,27 @@ if __name__ == '__main__':
         data[names[i]]['real_det'] = len(df.groupby('filename').indices[
                                             names[i]])
 
+    # adding the coordinates of our gt to the dictionary
     for index, row in df.iterrows():
         data[str(row['filename'])]['gt'].append((int(row['X']), int(row['Y'])))
-
-        img_det[_fileNames.index('Gelabert/'+str(row['filename']))
-                ] = cv2.circle(img_det[_fileNames.index('Gelabert/'
-                                                        + str(row['filename']))
-                                       ],
-                               (int(row['X']), int(row['Y'])),
-                               1, (255, 0, 0), 3)
 
     filtered_imgs = []
     for i in range(len(_fileNames)):
         file = _fileNames[i].split('/')[1]
         img = images_color[i].copy()
-
+        img_non = images_color[i].copy()  # Image bbox detections
         # Checking for all labels which bounding boxes contain her
         for coord in data[file]['gt']:
             for x, y, w, h in det[i]:
                 # if roi not too big or really small chech it
                 if ((w < images[0].shape[0]/3 and h < images[0].shape[1]/3)
                         or (w < 2 or h < 2)):
+                    img_non = cv2.rectangle(img_non, (x, y), (x + w, y + h),
+                                            (0, 0, 255), 2)
+
+                    if (x, y, w, h) not in data[file]['det']:
+                        data[file]['det'].append((x, y, w, h))
+
                     if (coord[0] >= x and coord[0] <= x+w and coord[1] >= y and
                        coord[1] <= y+h):
                         img = cv2.rectangle(img, (x, y), (x + w, y + h),
@@ -195,8 +192,9 @@ if __name__ == '__main__':
                 else:
                     if (x, y, w, h) not in data[file]['notuseful']:
                         data[file]['notuseful'].append((x, y, w, h))
-
+        img_det.append(img_non)
         filtered_imgs.append(img)
+    wimgs(img_det, _fileNames, 'gen/det')
 
     MSE = 0.0
 
@@ -205,8 +203,8 @@ if __name__ == '__main__':
 
     wimgs(filtered_imgs, _fileNames, 'gen/match')
 
-    metrics = {'files': names.copy(), 'precission': [], 'recall': [], 'f1 score': [],
-               'gt': [], 'detected': [], 'matched': []}
+    metrics = {'files': names.copy(), 'precission': [], 'recall': [],
+               'f1 score': [], 'gt': [], 'detected': [], 'matched': []}
 
     for i in range(len(images)):
 
@@ -222,8 +220,12 @@ if __name__ == '__main__':
             fp = len(data[names[i]]['rois']) - len(data[names[i]]['filter_rois']) - len(data[names[i]]['notuseful']) 
             precission = tp / (tp + fp)
 
+            # How many people not able to detect
             fn = len(data[names[i]]['gt']) - len(data[names[i]]['filter_rois'])
+
+            # we don't need this value
             tn = 0
+
             recall = tp / (tp + fn)
 
             f1 = (precission*recall) / ((precission+recall)/2)
@@ -232,10 +234,10 @@ if __name__ == '__main__':
             metrics['recall'].append(recall)
             metrics['f1 score'].append(f1)
             metrics['gt'].append(len(data[names[i]]['gt']))
-            metrics['detected'].append(tp + fp)
+            metrics['detected'].append(len(data[names[i]]['det']))
             metrics['matched'].append(tp)
 
-            MSE += (data[names[i]]['real_det'] - (tp + fp))**2
+            MSE += (data[names[i]]['real_det'] - len(data[names[i]]['det']))**2
             if parser.parse_args().plot:
                 plt.rcParams["figure.figsize"] = (15, 15)
                 fig, axs = plt.subplots(rows, cols, dpi=150)
@@ -260,4 +262,16 @@ if __name__ == '__main__':
     print(df)
     df.to_csv('metrics.csv', index=False, float_format='%.3f')
     MSE = MSE / (len(images)-1)  # We are not computing the empty one
-    print('MSE = ', MSE)
+
+    metrics_2 = {'MSE': MSE,
+                 'Macro-average precision': np.average(np.array(metrics['precission'])),
+                 'Macro-average recall': np.average(np.array(metrics['recall'])),
+                 'Macro-average F1': (np.average(np.array(metrics['precission']))*np.average(np.array(metrics['recall']))) / ((np.average(np.array(metrics['precission']))+np.average(np.array(metrics['recall'])))/2),
+                 }
+
+    df = pd.DataFrame.from_dict(metrics_2, orient='index')
+    print(df)
+    df.to_csv('metrics_2.csv', index=True, header=False, float_format='%.3f')
+
+    with open('MSE.txt', 'w') as f:
+        f.write('%f' % MSE)

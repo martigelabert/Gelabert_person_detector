@@ -16,6 +16,7 @@
 \usepackage[a4paper]{geometry}
 \usepackage{subcaption}
 \usepackage{comment}
+\usepackage{verbatim}
 \geometry{verbose,tmargin=3cm, hmargin=2cm}
 \usepackage[colorlinks = true,
             linkcolor = blue,
@@ -238,18 +239,50 @@ Now, with the image binarized we will a apply a dilation to the image. The dilat
 \subsection{Find contours}
 Once a binarized image is obtained, there should be a process of contour detection. Here we use the dilated images over the function that openCV provides \codeword{cv2.findContours()}. From this functions, we can extract the bounding boxes that contain each of the object contours. In the figure \ref{fig:detections} appears the image with some bounding boxes applyed.
 
+%\subsection{Matching Algorithm}
 
-\subsection{Matching Algorithm}
-For convenience, we will cuantify our detection accuracy using the some "incorrect" assumptions. We will be checking if the bounding box contain labels, only one label containing will be assigned to that bounding box. In the case we would have a really big box keeping a lot of detection we will not count that as correct, but in the cases where it may contain a region of 4 or 5 persons because they are really close to each other, we would be more flexibles.\newline
 
-For checking the dimensionality of the bounding box, we would assume that width or height higher than a third of the image will not be acceptable, and the same for the ones no more than two pixels size. 
-\section{Results Analysis}
+\section{Results and Analysis}
+
+For convenience, we will cuantify our detection accuracy using the following assumptions:
+
+\begin{itemize}
+    \item If detection contains more than one person it will count as only one detection.
+    \item In the case we would have a really big region we will discharge that detection.
+    \item For checking the dimensionality of the bounding box, we would assume that width or height higher than a third of the image will not be acceptable.
+    \item Regions really small will also be dircharted.
+    \item Some labels of the ground truth could be double checked.
+    %For checking if the region detected contain labels inside their boundaries, only one will be check. In the case we would have a really big box keeping a lot of detection we will not count that as correct, but in the cases where it may contain a region of 4 or 5 persons because they are really close to each other, we would be more flexibles.
+\end{itemize}
+%For checking the dimensionality of the bounding box, we would assume that width or height higher than a third of the image will not be acceptable, and the same for the ones no more than two pixels size. 
+
+The reasone of the anterior list, are bounded to the complexity of the problem. We are not restrictive enought to loose a lot of information. Allowing more flexibility in order to have more valid detections let us obtain a better performance overall. Also, some cases are unlikely to happen really offen.
+
+\subsection*{Results}
 
 \begin{table} [hp]
     \centering
     \caption[Performance metrics Basic]{Performance metrics using the propossed algorithm}\label{table:metrics}
 \csvautobooktabular{../metrics.csv}
 \end{table}
+
+For an extra point of camparison, we will be using \textbf{mean squared error} where we obtain a value of \input{../MSE.txt}. Here we are obtaining that we are having a huge error 
+
+\begin{table} [hp]
+    \centering
+    \caption[Performance metrics overall]{Performance metrics overall using the propossed algorithm}\label{table:metrics_2}
+
+    \csvreader[%
+    tabular=|l|r|,
+    respect underscore=true,
+    %no head,
+    table head=\hline Metric & Scoring \\\hline,
+    late after line=\\\hline
+  ]%
+  {../metrics_2.csv}{}%
+  {\csvcoli & \csvcolii}%
+\end{table}
+
 
 \begin{figure}
     \centering
