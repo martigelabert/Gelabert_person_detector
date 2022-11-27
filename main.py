@@ -266,7 +266,7 @@ if __name__ == '__main__':
     metrics_2 = {'MSE': MSE,
                  'Macro-average precision': np.average(np.array(metrics['precission'])),
                  'Macro-average recall': np.average(np.array(metrics['recall'])),
-                 'Macro-average F1': (np.average(np.array(metrics['precission']))*np.average(np.array(metrics['recall']))) / ((np.average(np.array(metrics['precission']))+np.average(np.array(metrics['recall'])))/2),
+                 'Macro-average F1': np.average(metrics['f1 score'])
                  }
 
     df = pd.DataFrame.from_dict(metrics_2, orient='index')

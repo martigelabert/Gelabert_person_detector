@@ -27,12 +27,13 @@
 \usepackage{listings}
 \usepackage[section]{placeins}
 \usepackage{xparse}
+\usepackage{caption}
 \usepackage{csvsimple, booktabs}
 
 \usepackage[toc]{appendix}
 \usepackage{mwe}
 \usepackage{float} % Figure placement "Here".
-
+\usepackage{pgffor}
 \usepackage{appendix}
 
 \usepackage{fancyhdr} % headers and footers
@@ -256,13 +257,13 @@ For convenience, we will cuantify our detection accuracy using the following ass
 \end{itemize}
 %For checking the dimensionality of the bounding box, we would assume that width or height higher than a third of the image will not be acceptable, and the same for the ones no more than two pixels size. 
 
-The reasone of the anterior list, are bounded to the complexity of the problem. We are not restrictive enought to loose a lot of information. Allowing more flexibility in order to have more valid detections let us obtain a better performance overall. Also, some cases are unlikely to happen really offen.
+The reasone of the anterior list, are bounded to the complexity of the problem. We are not restrictive enought to loose a lot of information. Allowing more flexibility in order to have more valid detections let us obtain a better performance overall. Also, some cases are unlikely to happen really offen. In the tables \ref{table:metrics1} and \ref{table:metrics_2} is shown how the algorithm performs.
 
 \subsection*{Results}
 
 \begin{table} [hp]
     \centering
-    \caption[Performance metrics Basic]{Performance metrics using the propossed algorithm}\label{table:metrics}
+    \caption[Performance metrics Basic]{Performance metrics using the propossed algorithm}\label{table:metrics1}
 \csvautobooktabular{../metrics.csv}
 \end{table}
 
@@ -273,9 +274,9 @@ For an extra point of camparison, we will be using \textbf{mean squared error} w
     \caption[Performance metrics overall]{Performance metrics overall using the propossed algorithm}\label{table:metrics_2}
 
     \csvreader[%
-    tabular=|l|r|,
+    tabular=|l|l|,
     respect underscore=true,
-    %no head,
+    no head,
     table head=\hline Metric & Scoring \\\hline,
     late after line=\\\hline
   ]%
@@ -320,6 +321,8 @@ The use of background subtraction to try to extract completely our foreground is
 
 \newpage
 \begin{appendices}
+    \section{Output}
+
     \section{Images related to the basic Algorithm}
     % the \\ insures the section title is centered below the phrase: AppendixA
 

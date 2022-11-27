@@ -9,5 +9,6 @@
 \contentsline {section}{\numberline {5}Is a different aproach capable of improving our results?}{6}{section.5}%
 \contentsline {section}{\numberline {6}Conclusions}{7}{section.6}%
 \contentsline {section}{Appendices}{8}{section*.6}%
-\contentsline {section}{\numberline {A}Images related to the basic Algorithm}{8}{appendix.1.A}%
-\contentsline {section}{\numberline {B}Complementary Images}{11}{appendix.1.B}%
+\contentsline {section}{\numberline {A}Output}{8}{appendix.1.A}%
+\contentsline {section}{\numberline {B}Images related to the basic Algorithm}{8}{appendix.1.B}%
+\contentsline {section}{\numberline {C}Complementary Images}{11}{appendix.1.C}%
