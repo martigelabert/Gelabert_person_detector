@@ -1,14 +1,16 @@
+\babel@toc {english}{}\relax 
 \contentsline {section}{\numberline {1}Introduction}{1}{section.1}%
 \contentsline {section}{\numberline {2}General Procedure}{2}{section.2}%
 \contentsline {section}{\numberline {3}algorithms}{2}{section.3}%
-\contentsline {subsection}{\numberline {3.1}Background Removal}{2}{subsection.3.1}%
-\contentsline {subsection}{\numberline {3.2}Binarization}{4}{subsection.3.2}%
-\contentsline {subsection}{\numberline {3.3}Dilation}{4}{subsection.3.3}%
-\contentsline {subsection}{\numberline {3.4}Find contours}{4}{subsection.3.4}%
+\contentsline {subsection}{\numberline {3.1}Annotation}{2}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Background Removal}{2}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Binarization}{4}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.4}Dilation}{5}{subsection.3.4}%
+\contentsline {subsection}{\numberline {3.5}Find contours}{5}{subsection.3.5}%
 \contentsline {section}{\numberline {4}Results and Analysis}{5}{section.4}%
-\contentsline {section}{\numberline {5}Is a different aproach capable of improving our results?}{6}{section.5}%
-\contentsline {section}{\numberline {6}Conclusions}{7}{section.6}%
-\contentsline {section}{Appendices}{8}{section*.6}%
-\contentsline {section}{\numberline {A}Output}{8}{appendix.1.A}%
-\contentsline {section}{\numberline {B}Images related to the basic Algorithm}{8}{appendix.1.B}%
-\contentsline {section}{\numberline {C}Complementary Images}{11}{appendix.1.C}%
+\contentsline {section}{\numberline {5}Is a different approach capable of improving our results?}{8}{section.5}%
+\contentsline {section}{\numberline {6}Conclusions}{8}{section.6}%
+\contentsline {section}{Appendices}{10}{section*.6}%
+\contentsline {section}{\numberline {A}Output}{10}{appendix.1.A}%
+\contentsline {section}{\numberline {B}Images related to the basic Algorithm}{14}{appendix.1.B}%
+\contentsline {section}{\numberline {C}Complementary Images}{17}{appendix.1.C}%
