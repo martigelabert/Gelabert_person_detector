@@ -950,13 +950,13 @@ INPUT ../gen/gray/1660302000.jpg
 INPUT ../gen/gray/1660302000.jpg
 INPUT ../gen/gray/1660302000.jpg
 INPUT ../gen/gray/1660302000.jpg
-INPUT ../metrics.csv
-INPUT ../metrics_2.csv
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmti10.tfm
 INPUT ../MSE.txt
 INPUT ../MSE.txt
 INPUT ../MSE.txt
 INPUT ../MSE.txt
+INPUT ../metrics.csv
+INPUT ../metrics_2.csv
 INPUT ./img/det_name.jpg
 INPUT ./img/det_name.jpg
 INPUT img/det_name.jpg

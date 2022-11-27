@@ -296,13 +296,16 @@ The reasone of the anterior list, are bounded to the complexity of the problem. 
 
 \subsection*{Results}
 
-\begin{table} [hp]
+In table \ref{table:metrics1}, the column of \textit{gt} represent the number of labels on each image, \textit{detected} represent the number detections found in the image, and the column \textit{matched} represent the number of detections where at least contained one label of our ground truth. As we can see, the tables show a normal scoring, having a balance in between the actual number of persons in each image and the detections, in figure \ref*{fig:detections} we can observe the output of the algorithm. But of course the general problem we will still have is the quantity of false positives we end up having in some images. Even the \textbf{mean squared error} with a value of \input{../MSE.txt} tells how this algorithm is missing with a huge error, we are predicting with a really soft constrictions and allowing a lot of error on our detections. Although this is done entirely on purpose and in the practice this has turned our to be more beneficial for our images.\newline
+
+
+\begin{table} [h]
   \centering
   \caption[Performance metrics Basic]{Performance metrics using the proposed algorithm}\label{table:metrics1}
   \csvautobooktabular{../metrics.csv}
 \end{table}
 
-\begin{table} [hp]
+\begin{table} [h]
   \centering
   \caption[Performance metrics overall]{Performance metrics overall using the proposed algorithm}\label{table:metrics_2}
 
@@ -317,19 +320,19 @@ The reasone of the anterior list, are bounded to the complexity of the problem. 
   {\csvcoli & \csvcolii}%
 \end{table}
 
-In table \ref{table:metrics1}, the column of \textit{gt} represent the number of labels on each image, \textit{detected} represent the number detections found in the image, and the column \textit{matched} represent the number of detections where at least contained one label of our ground truth. As we can see, the tables show a normal scoring, having a balance in between the actual number of persons in each image and the detections, in figure \ref*{fig:detections} we can observe the output of the algorithm. But of course the general problem we will still have is the quantity of false positives we end up having in some images. Even the \textbf{mean squared error} with a value of \input{../MSE.txt} tells how this algorithm is missing with a huge error, we are predicting with a really soft constrictions and allowing a lot of error on our detections. Although this is done entirely on purpose and in the practice this has turned our to be more beneficial for our images.\newline
-
-Should be considered the type of images we got and the placement of the ground truth can make a huge difference on our outcome, so this algorithm has been tuned to try to be the more general possible \textbf{only} with the images provided of my corresponding directory.
 
 
-
-\begin{figure}
+\begin{figure}[h]
   \centering
   \includegraphics[width=\textwidth]{img/det_name.jpg}
   \caption{Output of foreground detector, as it can be seen there are some big detections due to contourn detecting multiple forms as one shape, and some }
   \label{fig:detections}
 \end{figure}
 
+\FloatBarrier
+
+
+Should be considered that the type of images we got and the placement of the ground truth can make a huge difference on our outcome, so this algorithm has been tuned to try to be the more general possible \textbf{only} with the images provided in my corresponding directory.
 
 \section{Is a different approach capable of improving our results?}
 

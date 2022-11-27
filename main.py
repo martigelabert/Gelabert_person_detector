@@ -258,14 +258,22 @@ if __name__ == '__main__':
                 axs[1, 1].set_title("Non-filtered detections")
                 fig.tight_layout()
                 plt.show()
+
+    # This cvs are generated for the documentation.
     df = pd.DataFrame.from_dict(metrics)
     print(df)
     df.to_csv('metrics.csv', index=False, float_format='%.3f')
     MSE = MSE / (len(images)-1)  # We are not computing the empty one
 
-    metrics_2 = {'MSE': MSE,
-                 'Macro-average precision': np.average(np.array(metrics['precission'])),
-                 'Macro-average recall': np.average(np.array(metrics['recall'])),
+    metrics_2 = {
+                 'MSE': MSE,
+                 
+                 'Macro-average precision':
+                 np.average(np.array(metrics['precission'])),
+
+                 'Macro-average recall':
+                 np.average(np.array(metrics['recall'])),
+
                  'Macro-average F1': np.average(metrics['f1 score'])
                  }
 

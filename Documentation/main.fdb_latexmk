@@ -1,5 +1,5 @@
 # Fdb version 3
-["pdflatex"] 1669585495 "/home/marti/Documents/GitHub/Gelabert_person_detector/Documentation/main.tex" "main.pdf" "main" 1669585496
+["pdflatex"] 1669586675 "/home/marti/Documents/GitHub/Gelabert_person_detector/Documentation/main.tex" "main.pdf" "main" 1669586676
   "../MSE.txt" 1669571745 10 8c308c6a8f7449245aa9d7c5a13e2678 ""
   "../gen/det/1660287600.jpg" 1669571744 525922 069e78e0549a7deee73d14f41dec9b33 ""
   "../gen/det/1660291200.jpg" 1669571744 540287 08352ef63e66046b6cbda044aceadd66 ""
@@ -17,7 +17,7 @@
   "../metrics.csv" 1669571745 443 a6237427b2c0e8ce694fdb2e44f854e2 ""
   "../metrics_2.csv" 1669571745 92 bdf565ef7b292d627e5cd2e2fa41d2ce ""
   "/etc/texmf/web2c/texmf.cnf" 1668364000 475 c0e671620eb5563b2130f56340a5fde8 ""
-  "/home/marti/Documents/GitHub/Gelabert_person_detector/Documentation/main.tex" 1669585494 23285 2aef49df24b78fb5b5b63abc37d06c2f ""
+  "/home/marti/Documents/GitHub/Gelabert_person_detector/Documentation/main.tex" 1669586674 23307 e3825e4dee744a582792c200fe10a718 ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/jknappen/ec/tcrm1095.tfm" 1136768653 1536 02c06700a42be0f5a28664c7273f82e7 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmbx10.tfm" 1136768653 1328 c834bbb027764024c09d3d2bf908b5f0 ""
@@ -168,10 +168,10 @@
   "img/equ/1660302000.jpg" 1668780262 424092 79ea9bf466c8c97aff52edccf7fd6eb4 ""
   "img/or_ex.jpg" 1668427119 229951 27fd8e1d17055790320ab280466ce838 ""
   "img/sub.jpg" 1668437473 308537 b3e502ea40e06312597aeb56cef94b72 ""
-  "main.aux" 1669585496 7157 151fc23459965d2b6ffe3a598bce1c18 "pdflatex"
-  "main.out" 1669585496 2093 8cce7fe0a9e5b63ba339194b03897cce "pdflatex"
-  "main.tex" 1669585494 23285 2aef49df24b78fb5b5b63abc37d06c2f ""
-  "main.toc" 1669585496 1180 aa29f945ba4e2c132dd796a25d797fcc "pdflatex"
+  "main.aux" 1669586676 7155 9e1e10e6b66a7a6ae6be3369cbadeb82 "pdflatex"
+  "main.out" 1669586676 2093 8cce7fe0a9e5b63ba339194b03897cce "pdflatex"
+  "main.tex" 1669586674 23307 e3825e4dee744a582792c200fe10a718 ""
+  "main.toc" 1669586676 1178 d3fb7725f650ddb7bb82795b205b8031 "pdflatex"
   (generated)
   "main.aux"
   "main.log"
