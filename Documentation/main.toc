@@ -5,12 +5,12 @@
 \contentsline {subsection}{\numberline {3.1}Annotation}{2}{subsection.3.1}%
 \contentsline {subsection}{\numberline {3.2}Background Removal}{2}{subsection.3.2}%
 \contentsline {subsection}{\numberline {3.3}Binarization}{4}{subsection.3.3}%
-\contentsline {subsection}{\numberline {3.4}Dilation}{5}{subsection.3.4}%
+\contentsline {subsection}{\numberline {3.4}Dilation}{4}{subsection.3.4}%
 \contentsline {subsection}{\numberline {3.5}Find contours}{5}{subsection.3.5}%
 \contentsline {section}{\numberline {4}Results and Analysis}{5}{section.4}%
-\contentsline {section}{\numberline {5}Is a different approach capable of improving our results?}{7}{section.5}%
+\contentsline {section}{\numberline {5}Is a different approach capable of improving our results?}{6}{section.5}%
 \contentsline {section}{\numberline {6}Conclusions}{7}{section.6}%
-\contentsline {section}{Appendices}{9}{section*.6}%
-\contentsline {section}{\numberline {A}Output}{9}{appendix.1.A}%
-\contentsline {section}{\numberline {B}Images related to the basic Algorithm}{13}{appendix.1.B}%
-\contentsline {section}{\numberline {C}Complementary Images}{16}{appendix.1.C}%
+\contentsline {section}{Appendices}{8}{section*.6}%
+\contentsline {section}{\numberline {A}Output}{8}{appendix.1.A}%
+\contentsline {section}{\numberline {B}Images related to the basic Algorithm}{12}{appendix.1.B}%
+\contentsline {section}{\numberline {C}Complementary Images}{15}{appendix.1.C}%
