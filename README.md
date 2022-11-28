@@ -80,6 +80,11 @@ For a basic execution just :
 Final output
 ![Detections](gen/det/1660291200.jpg)
 
+- **Detected** : The number of persons that the algorithm detects as persons.
+
+- **GT** : The real number of persons on the image.
+
+- **Matched** : The number of detections that actually contains a label of the GT.
 
 Detections that match with the ground truth (NOT THE OUTPUT)
 ![match](gen/match/1660291200.jpg)
