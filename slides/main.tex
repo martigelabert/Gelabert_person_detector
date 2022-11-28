@@ -4,12 +4,42 @@
 \usepackage{subcaption}
 \usepackage{comment}
 \usepackage{csvsimple, booktabs}
+\usepackage{pgffor}%
+
+\usepackage{ifpdf}%
+  \ifpdf%
+    \DeclareGraphicsExtensions{.pdf,.png,.jpg}%
+  \else%
+    \DeclareGraphicsExtensions{.eps,.ps}%
+  \fi%
 \logo{\includegraphics[width=15mm,scale=0.2]{uib_01.png}}
 \beamertemplatenavigationsymbolsempty
 \usetheme{PaloAlto}
 %\usecolortheme{wolverine}
 %\setbeamertemplate{headline}{} % not showing on top
 \setbeamertemplate{footline}[page number]
+
+
+\newcommand*{\List}{%
+../gen/det/1660309200.jpg,
+../gen/det/1660302000.jpg,
+../gen/det/1660294800.jpg,
+../gen/det/1660320000.jpg,
+../gen/det/1660287600.jpg,
+../gen/det/1660298400.jpg,
+../gen/det/1660305600.jpg,
+../gen/det/1660316400.jpg,
+../gen/det/1660291200.jpg
+}%
+
+\newcommand{\beamerfigure}[1]{%
+  \begin{frame}%
+        \begin{figure}
+            \centering
+            \includegraphics[width=\textwidth]{"#1"}
+        \end{figure}
+  \end{frame}%
+}%
 
 %Information to be included in the title page:
 \title{A simple detector for crowd counting using OpenCV and Python}
@@ -219,21 +249,13 @@
 
 \section{Find contours}
 \begin{frame}
-    \frametitle{Find contours}
+    \frametitle{Output}
     \begin{figure}
         \centering
         \includegraphics[width=\textwidth]{../gen/det/1660305600.jpg}
     \end{figure}
 \end{frame}
 
-%\section{Real Matching}
-\begin{frame}
-    \frametitle{Matching}
-    \begin{figure}
-        \centering
-        \includegraphics[width=\textwidth]{../gen/match/1660305600.jpg}
-    \end{figure}
-\end{frame}
 
 \section{Results}
 
@@ -263,6 +285,11 @@
     MSE = \input{../MSE.txt}
 \end{frame}
 
+\section{Outputs}
+\foreach \name in \List {%
+  \beamerfigure{\name}%
+}%
+
 \section{Conclusions}
 \begin{frame}
     \frametitle{Conclusions}
@@ -275,8 +302,11 @@
 \end{frame}
 
 
-
-
-
+\begin{frame}
+    \frametitle{Thank you!}
+    
+        Any Questions?
+    
+\end{frame}
 
 \end{document}

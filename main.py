@@ -178,11 +178,15 @@ if __name__ == '__main__':
 
                     if (coord[0] >= x and coord[0] <= x+w and coord[1] >= y and
                        coord[1] <= y+h):
+
                         img = cv2.rectangle(img, (x, y), (x + w, y + h),
                                             (0, 255, 0), 2)
                         img = cv2.circle(img, coord,
                                          1, (255, 0, 0), 3)
-                        data[file]['filter_rois'].append((x, y, w, h))
+
+                        if (x, y, w, h) not in data[file]['filter_rois']:
+                            data[file]['filter_rois'].append((x, y, w, h))
+                        #data[file]['filter_rois'].append((x, y, w, h))
 
                         # If it contains at least one label we will count it
                         # as detection. We will loose all extra labels inside
@@ -192,8 +196,26 @@ if __name__ == '__main__':
                 else:
                     if (x, y, w, h) not in data[file]['notuseful']:
                         data[file]['notuseful'].append((x, y, w, h))
+
+        for x, y, w, h in data[file]['filter_rois']:
+            img_non = cv2.rectangle(img_non, (x, y), (x + w, y + h),
+                                    (0, 255, 0), 2)
+
+        cv2.rectangle(img_non, (0, 0), (500, 160), (255, 255, 255), -1)
+
+        cv2.putText(img_non, 'Detected : ' + str(len(data[names[i]]['det'])),
+                    (7, 40),  cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 0, 255), 4, 2)
+
+        cv2.putText(img_non, 'Matched : ' +
+                    str(len(data[names[i]]['filter_rois'])),
+                    (7, 80),  cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 255, 0), 4, 2)
+
+        cv2.putText(img_non, 'GT : ' + str(len(data[names[i]]['gt'])),
+                    (7, 130), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 0, 0), 4, 2)
+
         img_det.append(img_non)
         filtered_imgs.append(img)
+
     wimgs(img_det, _fileNames, 'gen/det')
 
     MSE = 0.0
@@ -240,7 +262,7 @@ if __name__ == '__main__':
             MSE += (data[names[i]]['real_det'] - len(data[names[i]]['det']))**2
             if parser.parse_args().plot:
                 plt.rcParams["figure.figsize"] = (15, 15)
-                fig, axs = plt.subplots(rows, cols, dpi=150)
+                fig, axs = plt.subplots(rows, cols, dpi=120)
 
                 axs[0, 0].imshow(resize(images[i]), cmap='gray')
                 axs[0, 0].set_title("original image")
@@ -255,7 +277,7 @@ if __name__ == '__main__':
 
                 axs[1, 1].imshow(resize(cv2.cvtColor(img_det[i],
                                         cv2.COLOR_BGR2RGB)))
-                axs[1, 1].set_title("Non-filtered detections")
+                axs[1, 1].set_title("Output")
                 fig.tight_layout()
                 plt.show()
 
@@ -267,7 +289,6 @@ if __name__ == '__main__':
 
     metrics_2 = {
                  'MSE': MSE,
-                 
                  'Macro-average precision':
                  np.average(np.array(metrics['precission'])),
 
