@@ -22,6 +22,7 @@
     ├── metrics_2.csv       ** output for documentation generation
     ├── metrics.csv         ** output for documentation generation
     ├── MSE.txt             ** output for documentation generation
+    ├── final_labels_gelabert_person_counter.csv ** gt
     ├── README.md
     └── requirements.txt        
     ...
