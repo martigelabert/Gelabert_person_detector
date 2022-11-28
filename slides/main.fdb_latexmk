@@ -1,7 +1,8 @@
 # Fdb version 3
-["pdflatex"] 1669607084 "/home/marti/Documents/GitHub/Gelabert_person_detector/slides/main.tex" "main.pdf" "main" 1669607085
+["pdflatex"] 1669607326 "/home/marti/Documents/GitHub/Gelabert_person_detector/slides/main.tex" "main.pdf" "main" 1669607328
   "../Documentation/img/OTSU_sub_arena.jpg" 1668386177 759961 2462e93b123a62618e40bef60f32b12a ""
   "../Gelabert/1660284000.jpg" 1668268927 116561 92201048f6014439bf8e12a46fe719cf ""
+  "../MSE.txt" 1669571745 10 8c308c6a8f7449245aa9d7c5a13e2678 ""
   "../gen/avg.png" 1668382833 571860 cb8413647057a5956b454c124e4885d1 ""
   "../gen/bin/1660305600.jpg" 1669571744 76014 000145b24db342707d4f06ffc10839a6 ""
   "../gen/bin/1660320000.jpg" 1669571744 113741 ef8ded3132a3a4cc91b89ae171050e63 ""
@@ -15,7 +16,7 @@
   "../mask.png" 1668278400 19795 ce079c6b45a07712fc0387e430a46d74 ""
   "../metrics.csv" 1669571745 443 a6237427b2c0e8ce694fdb2e44f854e2 ""
   "/etc/texmf/web2c/texmf.cnf" 1668364000 475 c0e671620eb5563b2130f56340a5fde8 ""
-  "/home/marti/Documents/GitHub/Gelabert_person_detector/slides/main.tex" 1669607082 7473 2189f3f3c727f8bf04fea32b314245ca ""
+  "/home/marti/Documents/GitHub/Gelabert_person_detector/slides/main.tex" 1669607326 7538 481525f9fcd2509ca17c4874f5abf51e ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/adobe/symbol/psyr.tfm" 1136768653 1408 5937f58aa508ea2cea4901c07d10f5fe ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/adobe/zapfding/pzdr.tfm" 1136768653 1528 f853c4d1b4e0550255e02831fdc8496f ""
@@ -228,10 +229,10 @@
   "/usr/share/texmf/web2c/texmf.cnf" 1644012257 39432 7155514e09a3d69036fac785183a21c2 ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1668364015 4379155 98693266ff65f58d9f98aff394de12d2 ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1668364024 2800746 5804d8c82014db52624b68bed2688bd1 ""
-  "main.aux" 1669607085 6948 8432afda642b05bd4d6f5c110b11b2b8 "pdflatex"
-  "main.nav" 1669607085 4296 3c5357e1ae55729fedce1c9000e960f3 "pdflatex"
-  "main.out" 1669607085 1172 1a0e8a0d2ea996458607e7928eda38de "pdflatex"
-  "main.tex" 1669607082 7473 2189f3f3c727f8bf04fea32b314245ca ""
+  "main.aux" 1669607327 6948 8432afda642b05bd4d6f5c110b11b2b8 "pdflatex"
+  "main.nav" 1669607327 4296 3c5357e1ae55729fedce1c9000e960f3 "pdflatex"
+  "main.out" 1669607327 1172 1a0e8a0d2ea996458607e7928eda38de "pdflatex"
+  "main.tex" 1669607326 7538 481525f9fcd2509ca17c4874f5abf51e ""
   "uib_01.png" 1669596365 43572 40a85de66be9298870d083ebd711352a ""
   (generated)
   "main.aux"

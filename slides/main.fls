@@ -1601,6 +1601,10 @@ INPUT ./uib_01.png
 INPUT uib_01.png
 INPUT ./uib_01.png
 INPUT ../metrics.csv
+INPUT ../MSE.txt
+INPUT ../MSE.txt
+INPUT ../MSE.txt
+INPUT ../MSE.txt
 INPUT ./uib_01.png
 INPUT ./uib_01.png
 INPUT uib_01.png
