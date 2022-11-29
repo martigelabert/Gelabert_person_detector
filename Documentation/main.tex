@@ -111,67 +111,68 @@ To just get a rough idea of the construction of the algorithm, we will enumerate
   \item Count them and compare the number of detections to the real quantity with a criterion established.
 \end{enumerate}
 
-\section{Algorithms}
-In this section we will discuss the steps taken to generate the final program, the algorithms selected and the output we obtain from them in the application of our problem.
+\section{Algorithms and decisions took}
+In this section we will discuss the steps taken to generate the final program, the algorithms selected and the output we obtain from them.
 
 \subsection{Annotation}
 
-For the annotation of the dataset it was used an online annotation tool, and some basic criteria was applied in order to decide how to label and if a person would be annotated or not:
+For the annotation of the dataset was used an online annotation tool and some basic criteria applied in order to decide how to label :
 \begin{itemize}
   \item The annotation would be points in the image.
   \item The annotations should be placed as near the head possible.
   \item If too many people where too close it may be annotated as just one person.
   \item In case of occlusion just annotate the most clear figure.
   \item Detections in the shore could be useful, so if the head was visibly recognizable it would be annotated.
-  \item Some sections of the image will be masked, and those regions will not be annotated.
+  \item Some sections of the image will be masked, therefore those regions will not be annotated.
 \end{itemize}
 
 The ground truth is saved as a csv file and the program loads it when it is needed.
 
 % Check spell
 \subsection{Background Subtraction}
-Background subtraction is a technique that allows to remove the background from the image, this way, the output will be only the foreground highlighted in the form of a binarized image as it can be illustrated on the figure \ref{fig: img_reference}.
+Background subtraction is a technique that allows to remove the background from the image, this way, the output of this technique will be an image with the foreground highlighted, it can be illustrated on the figure \ref{fig:sub_side}.
 
 \begin{figure}[h]
   \begin{subfigure}[t]{0.5\textwidth}
     \centering
-    \includegraphics[width=\textwidth]{img/bin_ex.jpg}
-    \caption{Output of background substraction using cv2.threshold(image, 100, 255, cv2.THRESH\_BINARY)}
-    \label{fig:y equals x}
+    \includegraphics[width=\textwidth]{../gen/sub/1660320000.jpg}
+    \caption{Image with subtraction applied}
+    \label{fig:sub_side}
   \end{subfigure}
   ~
   \begin{subfigure}[t]{0.5\textwidth}
     \centering
-    \includegraphics[width=\textwidth]{img/or_ex.jpg}
+    \includegraphics[width=\textwidth]{../Gelabert/1660320000.jpg}
     \caption{Original 1660320000.jpg}
     \label{fig:y equals x}
   \end{subfigure}
 
   \caption{Reference images}
-  \label{fig: img_reference}
+  \label{fig:img_reference}
 \end{figure}
 \FloatBarrier
-In the following sections will be explained how the preprocessing of this technique was prepared and for what they are used for. They are ordered by
+
+In the following sections will be explained how the preprocessing of this technique was prepared and for what they are used for. The sections are ordered by application.
 
 \subsubsection*{CLAHE}
 
-In the case of our problem, first we have imported all the images in black and white integer values using \codeword{cv2.imread(img,0)}. Then for a better extraction, it has been applyed an \textbf{algorithm of CLAHE} seen previously on the course to try to uniformize the ilumination of the images. With a more uniform images, we will be able to distinguish more precisely our foreground and artifact like shadows casted by objects on the images may have less impact on the \textbf{binarization process}.
+First we have imported all the images in black and white integer values using \codeword{cv2.imread(img,0)}. Then for a better extraction, it has been applied an \textbf{algorithm of CLAHE} seen previously on the course to try to uniformize the illumination of the images. With a more uniform images and a higher contrast, we will be able to distinguish more precisely our foreground and artifact like \textbf{cast shadows} by objects on the images may have less impact on the \textbf{binarization process}. 
 
 \begin{figure}[h]
   \centering % <-- added
   \begin{subfigure}{0.25\textwidth}
     \includegraphics[width=\linewidth]{img/equ/1660284000.jpg}
-    \caption{1660284000.jpg with CLAHE applyed}
+    \caption{1660284000.jpg with CLAHE applied}
     \label{fig:1}
   \end{subfigure}\hfil % <-- added
   \begin{subfigure}{0.25\textwidth}
     \includegraphics[width=\linewidth]{img/equ/1660287600.jpg}
-    \caption{1660287600.jpg with CLAHE applyed}
+    \caption{1660287600.jpg with CLAHE applied}
     \label{fig:2}
   \end{subfigure}\hfil % <-- added
   \begin{subfigure}{0.25\textwidth}
     \includegraphics[width=\linewidth]{img/equ/1660302000.jpg}
-    \caption{1660302000.jpg with CLAHE applyed}
+    \caption{1660302000.jpg with CLAHE applied}
     \label{fig:3}
   \end{subfigure}
 
@@ -193,41 +194,43 @@ In the case of our problem, first we have imported all the images in black and w
     \caption{1660302000.jpg gray}
     \label{fig:4}
   \end{subfigure}\hfil % <-- added
-  \caption{Images from Gelabert folder where the first row presents a more uniform ilumination across frames ompared with the second row images.}
+  \caption{Images from Gelabert folder where the first row presents a more uniform illumination compared with the second row images. (The images can be compared in the directory \textit{./gen/equ/})}
 \end{figure}
+
+With the resulting images, the higher contrast and a more similar mood between frames could facilitate us the task of find a more neutral background image. This way, the differences  when applying the subtraction will be a sharper foreground in an ideal case. 
 
 \FloatBarrier
 \subsubsection*{Background Image}
 
-For the selection of our background image, in a starting point the \textbf{average image} was computed as the main way for accomplish foreground extraction, but the resulting image generally was really noisy and with ghosting effect very present on it, which decreased the performance of the algorithm as it can bee seen on the Figure \ref{fig:avg}. Even with a gaussian blur applyed to try to counter the ghosty figures, they are still really present on the image. The image averaging is a good idea generally for noise reduction and in this case to try to obtain a neutral image were the background is predominant, but there is not enought images to obtain a more sharp image to really have a good background. Therefore, we \textbf{end up} using the image 1660284000.jpg with a gaussian blur applyed as our background, this way we obtain better results on the \textbf{binarization process}.
+For the selection of our background image, in a starting point the \textbf{average image} was computed as the main way for accomplish foreground extraction, but the resulting image generally was really noisy and with ghosting effect very present on it, which decreased the performance of the algorithm as it can bee seen on the figure \ref{fig:avg}. Even with a \textbf{Gaussian blur} applied to try to counter the "ghostly" figures, they are still really present on the image. Averaging is a good idea generally for noise reduction and in this case to try to obtain a neutral image where the background is \textbf{predominant}, but there is not enough images to obtain a more sharp image to really have a good background. Therefore, we \textbf{end up} using the image in the figure \ref{fig:background} (1660284000.jpg)  with a Gaussian blur applied as our background, this way we obtain better results on the \textbf{binarization process}.
 
 %\begin{figure}[h]
 %    \centering
 %    \includegraphics[width=0.9\textwidth]{img/avg.png}
-%    \caption{Average image with a gaussian blur applyed with a kernel of (11,11)}
+%    \caption{Average image with a gaussian blur applied with a kernel of (11,11)}
 %    \label{fig:avg}
 %\end{figure}
 
 
 
 \subsubsection*{Gaussian Blur}
-With an image already selected for the image background, it is applyed a gaussian filtering with a kernel of size (7,7), this way  we can obtain a more standard image, and get a more smuthered image that will allow the algorithm to contrast slightly better our foreground.\newline
+With an image already selected for the image background, it is applied a Gaussian filtering with a kernel of size (15,15), this way  we can obtain a more smooth \textbf{neutral image} that will allow the algorithm to contrast slightly better our foreground. With this technique applied, we try to obtain an image with the fewer details possible and just keep the core general ones. The ending size used for this filter was obtained by trial and error experimentation, and could be changed to get different behaviours.
+
 
 %\begin{figure}[h]
 %    \centering
 %    \includegraphics[width=0.9\textwidth]{img/back_blur.png}
-%    \caption{Gaussian Blur Applyed with a kernel of size (7,7)}
+%    \caption{Gaussian Blur applied with a kernel of size (7,7)}
 %    \label{fig:gaussian}
 %\end{figure}
 
 
 
-The ending size used for gaussian blur was obtained by trial and error experimentation, and could be changed to get different ending behaveours.
 
 
-\subsubsection*{Substraction}
+\subsubsection*{Subtraction}
 
-Once we have selected our background and applyed the preprocessing, we should substract it to every image, this way, the result we end up with is the foreground (in this case the persons and some residuals) highlighted as we can see in the figure \ref{fig:sub}.
+Once we have selected our background and applied the preprocessing, we should subtract it to every image, this way, the result we end up with is the \textbf{foreground} (in this case the persons and some residuals) highlighted as we can see in the figure \ref{fig:sub}.
 
 %\begin{figure}[h]
 %    \centering
@@ -238,22 +241,12 @@ Once we have selected our background and applyed the preprocessing, we should su
 
 
 \subsection{Binarization}
-Once the substraction has been aplyed to all images, the resulting foreground will contain hopefully our persons. All those whity areas should be further treated using a binarization progress, allowing a solid division between  the background and our foreground. This is acomplish by the process of binaryzation. Depending of the process selected, the resulting image will transform into a binary black and white image from a gray scale one. In this assignment there has been some experimentation using OTSU and the binary threasholding function avaliable on cv2 library, but for the sake of the performance, the last one has been ultimately selected.\newline
 
-The problem with using OTSU is that for each images it obtains a threshold selection automatically, and this should not be a problem, and sometimes could perform better than a fixed one. But for the samples tested there are a lot of artifacts related to the shadow casting of the image, as it can be seen in the figure \ref{fig:otsu_bin}. The problems are seen on the bottom of the image, where there are an amount of shadows casted by the sand crests which can be a bit annoying for the next steps.\newline
+Once the subtraction has been applied to all images, the resulting foreground will contain hopefully our persons. All those whitish areas should be further treated using a \textbf{binarization progress}, allowing a \textbf{solid division} between  the background and our foreground. The process will return an image where the black areas and whitish areas are transformed into a pure binary one. In this assignment there has been some experimentation using \textbf{OTSU} and the basic binary thresholding function available on cv2, but for the sake of the performance, the last one has been ultimately selected.\medskip
 
+The problem with using \textbf{OTSU} is that for each image it obtains a threshold selection automatically, and this should not be a problem, and sometimes could perform better than a fixed one. But for the samples tested, there are a lot of artifacts related to the shadow casting of some objects or the sand in some images, as it can be seen in the figure \ref{fig:otsu_bin}. The problems are located on the bottom, where there are an amount of shadows casts by the sand crests which can be a bit annoying for the next steps.\medskip
 
-%\begin{figure}[h]
-%    \centering
-%    \includegraphics[width=\textwidth]{img/OTSU_sub_arena.jpg}
-%    \caption{Binarized image using OTSU and the empty beach image}
-%    \label{fig:otsu_bin}
-%\end{figure}
-
-%\FloatBarrier
-
-
-By using a set thresholding we are loosing some flexibility and a fixed values could not be the wiser idea, but in this case using a tigth threshold may be the best decision as may reduce the number of false detections considerably. In this case the values selected are setted in the instruction \codeword{cv2.threshold(substracted, 100, 255, cv2.THRESH_BINARY)}. The resulting image can be shown in figure \ref{fig:binth}.
+By using a set thresholding we are loosing some flexibility and a fixed margin could not be the wiser idea, but in this case using a \textbf{tight threshold} may be the best decision as may reduce the number of false detections considerably. In this case the values selected are set in the instruction \codeword{cv2.threshold(subtracted, 100, 255, cv2.THRESH_BINARY)}. The resulting image can be shown in figure \ref{fig:binth}.
 
 
 %\begin{figure} [hp]
@@ -264,45 +257,46 @@ By using a set thresholding we are loosing some flexibility and a fixed values c
 %\end{figure}
 
 \subsubsection*{Masking}
-For a better filtrage of our data, we will be using a binary mask to get rid of centain areas of the image where we can get non-persons in the foreground (i.e the quay part) and those areas where there is to much information to get clear data about it. We can see the last case in the umbrella section of the beach and the pavement area, where there are too many persons overlaping each others. The mask applyed can be seen in the figure \ref{fig:mask_ex}.
-
-
+For a better \textbf{filtrate} of our binary image, we will be using a binary mask to get rid of certain areas of the image where we can get non-persons in the foreground (i.e. the quay part) and those areas where there is too much information to get clear detections about it. We can see the last case in the umbrella section of the beach and the pavement area, where there are too many persons overlapping each others. The mask applied can be seen in the figure \ref{fig:mask_ex}.
 
 \subsection{Dilation}
-Now, with the image binarized we will a apply a dilation to the image. The dilation will expand the white color on a binarized image, obtaining as results the highlighted areas in form of white chunks as it can be seen on figure \ref{fig:dilation_ex}. With these chunks the countourn detection will obtain better results because they are more clear shapes. This could merge figures into one, so the parameters of the kernel size may be tinkered with to obtain the best performance possible.
+Now, with the image binarized we will apply a \textbf{dilation} to the image. The dilation will expand the white areas on a binarized image, obtaining as results the highlighted areas in form of white chunks as it can be seen on figure \ref{fig:dilation_ex}. With these chunks the contour detection will obtain better results because they are more clear shapes. This could merge figures into one, so the parameters of the kernel size may be tinkered with to obtain the best performance possible.\medskip
 
-
+With this approach we are probably obtaining areas too big that contain more than one person, this is done on purpose. The algorithm values more loose detection precision to trade it by at least getting areas where people tend to concentrate. This way, we end up with at least an idea of where people could possibly be on our the image.
 
 \subsection{Find contours}
-Once a binarized image is obtained, there should be a process of contour detection. Here we use the dilated images over the function that openCV provides \codeword{cv2.findContours()}. From this functions, we can extract the bounding boxes that contain each of the object contours. In the figure \ref{fig:detections} appears the image with some bounding boxes applyed.
+Once a dilation image is applied, there should be a process of contour detection. Here we use the images obtained in the previous technique over the function that openCV provides, \codeword{cv2.findContours()}. From this function, we can extract the bounding boxes that contain each of the object contours. In the figure \ref{fig:detections} appears the image with some bounding boxes applied.
 
 %\subsection{Matching Algorithm}
-
 
 \section{Results and Analysis}
 
 For convenience, we will quantify our detection accuracy using the following assumptions:
 
 \begin{itemize}
-  \item If detection contains more than one person it will count as only one detection.
-  \item In the case we would have a massive region we will discharge that detection.
+  \item The detection will only be a \textbf{true positive} when it contains at least a label.
+  \item If detection contains more than one person it will count as \textbf{only one detection}.
+  \item In the case we would have a massive region, we will discard that detection.
   \item For checking the dimensionality of the bounding box, we would assume that width or height higher than a third of the image will not be acceptable.
   \item Regions minuscule will also be discarded.
-  \item Some labels of the ground truth could be double checked.
+  \item And some labels of the ground truth could be double checked.
         %For checking if the region detected contain labels inside their boundaries, only one will be check. In the case we would have a really big box keeping a lot of detection we will not count that as correct, but in the cases where it may contain a region of 4 or 5 persons because they are really close to each other, we would be more flexibles.
 \end{itemize}
 %For checking the dimensionality of the bounding box, we would assume that width or height higher than a third of the image will not be acceptable, and the same for the ones no more than two pixels size. 
 
-The reason of the anterior list, are bounded to the complexity of the problem. We are not restrictive enought to loose a lot of information. Allowing more flexibility in order to have more valid detections let us obtain a better performance overall. Also, some cases are unlikely to happen really offen. In the tables \ref{table:metrics1} and \ref{table:metrics_2} is shown how the algorithm performs.
+We are not restrictive enough to lose a lot of information. Allowing more \textbf{flexibility} in order to have more valid detections let us obtain a better performance overall. Also, some cases are unlikely to happen really often. In the tables \ref{table:metrics1} and \ref{table:metrics_2} is shown how the algorithm performs.
 
 \subsection*{Results}
 
-In table \ref{table:metrics1}, the column of \textit{gt} represent the number of labels on each image, \textit{detected} represent the number detections found in the image, and the column \textit{matched} represent the number of detections where at least contained one label of our ground truth. As we can see, the tables show a low scoring, having an unbalance in between the actual number of persons in each image and the detections, in figure \ref*{fig:detections} we can observe the output of the algorithm. But of course the general problem we will still have is the quantity of false positives we end up having in some images. Even the \textbf{mean squared error} with a value of \input{../MSE.txt} tells how this algorithm is having a huge error, we are predicting with a really soft constrains and allowing a lot of error on our detections. Although this is done entirely on purpose and in the practice this has turned our to be more beneficial for our images.\newline
+% In table \ref{table:metrics1}, the column of \textit{gt} represent the number of labels on each image, \textit{detected} represent the number detections found in the image, and the column \textit{matched} represent the number of detections where at least contained one label of our ground truth.
 
+% In figure \ref*{fig:detections} we can observe the output of the algorithm.
+
+As we can see, the tables \ref{table:metrics1} and \ref{table:metrics_2} show a \textbf{low scoring}, having a clear unbalance in between the actual number of persons in each image and the correct detections. But of course the general problem we will still have is the quantity of false positives we end up having in some images. Even the \textbf{mean squared error} with a value of \input{../MSE.txt} tells how this algorithm is having a huge error, also we are predicting with a really soft constrains and allowing a lot of error on our detections. Although this is done entirely on purpose and in the practice this has turned out to be more beneficial.\medskip
 
 \begin{table} [h]
   \centering
-  \caption[Performance metrics Basic]{Performance metrics using the proposed algorithm}\label{table:metrics1}
+  \caption[Performance metrics Basic]{Performance metrics using the proposed algorithm, the column of \textit{gt} represent the number of labels on each image, \textit{detected} represent the number detections found in the image, and the column \textit{matched} represent the number of detections where at least contained one label of our ground truth}\label{table:metrics1}
   \csvautobooktabular{../metrics.csv}
 \end{table}
 
@@ -324,28 +318,24 @@ In table \ref{table:metrics1}, the column of \textit{gt} represent the number of
 \begin{figure}[h]
   \centering
   \includegraphics[width=\textwidth]{img/det_name.jpg}
-  \caption{Output of foreground detector, as it can be seen there are some big detections due to contourn detecting multiple forms as one shape, and some }
+  \caption{Output without formatting. As it can be seen there are some big detections due to contours detecting multiple forms as one shape and some inner detections}
   \label{fig:detections}
 \end{figure}
 
 \FloatBarrier
 
-
-Should be considered that the type of images we got and the placement of the ground truth can make a huge difference on our outcome, so this algorithm has been tuned to try to be the more general possible \textbf{only} with the images provided in my corresponding directory.
+Should be considered that the type of images we got and the placement of the ground truth can make a huge difference on our outcome, so this algorithm has been tuned to try to be the more general possible \textbf{only} with the images provided in the corresponding directory.
 
 \section{Is a different approach capable of improving our results?}
 
-For some of the test that were executed for this assignment, generally the effort was not useful. Ending up in situations where a precise modification to the parameters gave as output excellent results only in a subset of the images. Usually the over-tunning of some function parameters made really inconsistent outputs that provoked a bad performance.\newline
-
-In the following subsections it will be discussed some other paths to accomplish the task of the assignment, some of them had been implemented during the development stage if implemented or experimented with.
+For some of the test that were executed for this assignment, generally the effort was not useful. Ending up in situations where a precise modification to the parameters gave as output excellent results only in a subset of the images. Usually the over-tunning of some function parameters made really inconsistent outputs and provoked a bad performance. In the following subsections it will be discussed some other paths that could be considered to accomplish this task.
 
 \subsection*{Color Spacing}
-
-For example, one of the approaches taken for background removal, was the use of colored images in the color space of LAB  instead of gray scale. On the paper one may think that the use of color will improve our performance, because of the extra information we are just acquired from free. But in this case the process to obtain our foreground sections were in general less precise, giving as result a lot more objects as foreground, which is not ideal for our case, been a lot of those object just umbrellas and cast shadows.\newline
+For example, one of the approaches taken for background removal, was the use of colored images in the color space of LAB  instead of gray scale. On the paper one may think that the use of color will improve our performance, because of the extra information we are just acquired from free. But in this case the process to obtain our foreground sections were in general less precise, giving as result a lot more objects as foreground, which is not ideal for our case, been a lot of those object just umbrellas and cast shadows.
 
 \subsection*{The problem with shadows}
 
-In general, the sample images follow a consisting landscape withouth heavy cast shadows on the sand, but it is noticeable in some of them, and usually they will give you more than one headache.\newline
+In general, the sample images follow a consisting landscape without heavy cast shadows on the sand, but it is noticeable in some of them, and usually they will give you more than one headache.\medskip
 
 We could try to counter some cases using a sharpening processes or even more filtering (i.e. median filtering), to avoid certain annoyance for shadows, but doesn't mean that it will be worth it to apply. We could have the situation again where is really useful for 1 case, but then the rest of images just got obliterated just for applying those transformations.
 
@@ -355,12 +345,14 @@ For a reason of time, the annotation was given only by dots on the image, but it
 
 \section{Conclusions}
 
+As we could be expecting, the performance is not good compared to a neural network or anything in general. There are some cases where we can't be completely sure about classifying incorrectly our detection because of how the ground truth is placed. Some detections are actually correct but slightly shifted and without a manual intervention it is not capable to compute that as good. In general, the amount of false positives is really present on our results, and overall concentrates in areas where there is a brusque lighting change like \textbf{cast shadows} or where there is a lot of \textbf{information compacted} like in the shores and further places of the landscape.\medskip
 
-As we could be expecting, the performance is not good compared to a neural network. There are some cases where we can be completely sure about classifying incorrectly our detection because of how the ground truth is placed, some detections are actually correct but slightly shifted and without a manual intervention it is safer to just leave it as 'incorrect'. In general, the amount of false positives is consistent and overall  generally concentrates in areas where there is a brusque lighting change like cast shadows or where there is a lot of information compacted like in the shores.\newline
+The use of \textbf{background subtraction} to try to extract completely our foreground is a tricky task, and it can be performed following different strategies, for example, computing an averaged image. In this case with just the images from the 'Gelabert' folder the output generated was not clear enough (even with some processing) to accomplish the objective, and in the end just using the empties image was the one given the best performance. We can still spice up our work if we start working with more \textbf{complex color spaces}, like LAB, or using more \textbf{complex post-processing conditions} for the sake of improving our results.\medskip
 
-The use of \textbf{background subtraction} to try to extract completely our foreground is a tricky task, and it can be performed following different strategies, for example, using an averaged image could allow to have an image with the solid background on it, but it works better when we dispose of a lot of samples. With just the images from the 'Gelabert' folder the output generated was not clear enough (even with some processing) to accomplish the objective, and in the end just using the empties image was the one given the best performance. We can still spice up our work if we start working with more complex color spaces, like LAB, or using more complex post-processing conditions for the sake of improving our results, but in some cases, working with simpler ideas give the best results.\newline
+Even we could try to implement a linear regression based of pixel counting for trying to estimate the number of detections in a big region. But in some cases, working with simpler ideas may be the way to go.\medskip
 
-Of course, we have to take in count how flexible the annotation and the accuracy measurements where, but as it can be shown on the outputs, we are capable of at least detecting areas where people concentrates, and even single persons in some images. Therefore, for the use of these techniques it should be enough.
+
+Of course, we have to take in count how flexible the annotation and the accuracy measurements where, but as it can be shown on the outputs, we are capable of at least detecting areas where people concentrates, and even single persons in some cases. Therefore, for the use of these techniques it should be enough.
 
 \newpage
 \begin{appendices}
@@ -398,10 +390,16 @@ Of course, we have to take in count how flexible the annotation and the accuracy
   \begin{figure} [h]
     \centering
     \includegraphics[width=\textwidth]{img/dil.jpg}
-    \caption{Dilation applyed to the binarized image}
+    \caption{Dilation applied to the binarized image}
     \label{fig:dilation_ex}
   \end{figure}
 
+  \begin{figure} [h]
+    \centering
+    \includegraphics[width=\textwidth]{../gen/blur.png}
+    \caption{Background Image with Gaussian blur applied}
+    \label{fig:background}
+  \end{figure}
 
 
   \section{Complementary Images}
@@ -409,14 +407,14 @@ Of course, we have to take in count how flexible the annotation and the accuracy
   \begin{figure}[h]
     \centering
     \includegraphics[width=0.9\textwidth]{img/avg.png}
-    \caption{Average image with a gaussian blur applyed with a kernel of (11,11)}
+    \caption{Average image with a gaussian blur applied with a kernel of (11,11)}
     \label{fig:avg}
   \end{figure}
 
   \begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{img/OTSU_sub_arena.jpg}
-    \caption{Binarized image using OTSU and the empty beach image}
+    \caption{Binarized image using OTSU}
     \label{fig:otsu_bin}
   \end{figure}
 
