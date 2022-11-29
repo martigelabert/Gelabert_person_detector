@@ -1,0 +1,5 @@
+behaviours
+thresholding
+OTSU
+binarization
+binarized

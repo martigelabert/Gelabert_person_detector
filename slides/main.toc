@@ -1,0 +1,7 @@
+\beamer@sectionintoc {2}{Background Removal}{15}{0}{1}
+\beamer@sectionintoc {3}{Binarization}{24}{0}{2}
+\beamer@sectionintoc {4}{Dilation}{28}{0}{3}
+\beamer@sectionintoc {5}{Find contours}{30}{0}{4}
+\beamer@sectionintoc {6}{Results}{32}{0}{5}
+\beamer@sectionintoc {7}{Outputs}{36}{0}{6}
+\beamer@sectionintoc {8}{Conclusions}{46}{0}{7}

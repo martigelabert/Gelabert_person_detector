@@ -186,7 +186,6 @@ if __name__ == '__main__':
 
                         if (x, y, w, h) not in data[file]['filter_rois']:
                             data[file]['filter_rois'].append((x, y, w, h))
-                        #data[file]['filter_rois'].append((x, y, w, h))
 
                         # If it contains at least one label we will count it
                         # as detection. We will loose all extra labels inside
