@@ -44,7 +44,7 @@
 }%
 
 %Information to be included in the title page:
-\title{A simple detector for crowd counting using OpenCV and Python}
+\title{Crowd counting using OpenCV and Python}
 \author{Martí Gelabert Gómez}
 \institute{University of the Balearic Islands}
 \date{\today}
@@ -64,6 +64,7 @@
 
 \frame{\titlepage}
 
+\section*{Introduction}
 \begin{frame}
 
     \frametitle{Objective}
@@ -112,10 +113,12 @@
 
 \end{frame}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+
 
 \begin{frame}
-    \frametitle{Where do we start}
-    Then, we need a way for detecting people:
+    \frametitle{Person detection}
+    Now, we need a way for \textbf{detecting people}:
     \begin{itemize}
         \item<2-> Gabor filtering  \pause {\color{red} \ding{55}}
         \item<3-> Edge detector  \pause {\color{red} \ding{55}}
@@ -127,36 +130,23 @@
 
 %\frame{\tableofcontents}
 
-\begin{comment}
-    \section*{Procedure}
-\begin{frame}
-\frametitle{Procedure}
-\begin{enumerate}
-    \item Import images as black and white.
-    \item Apply Adaptative Histogram equalization to the images.
-    \item Substract the background to the images using the image with the background.
-    \item Apply an erosion algorithm to obtain small highlighted areas.
-    \item Apply a thresholding algorithm to binarize the image.
-    \item Apply a dilation operation into the binarized images to expand the whites.
-    \item Use a contour algorithm to extract the diferent regions containing persons.
-    \item Obtain the bounding boxes from these regions.
-    \item Count them and compare the number of detections to the real cuantity.
-\end{enumerate}\end{frame}
-\end{comment}
-
-
-
 \section{Background Removal}
     \begin{frame}
         \frametitle{Background Removal}
         \begin{figure}
             \centering
-            \includegraphics[width=\textwidth]{../gen/bin/1660320000.jpg}
+            \includegraphics[width=\textwidth]{../gen/sub/1660320000.jpg}
         \end{figure}
     \end{frame}
 
 \begin{frame}
+
+    \begin{block}{Remark}
+        The operations will be done using \textbf{grey scale} images.
+        \end{block}\medskip
+        
         We need to do something with the \textbf{illumination} of the images and improve the \textbf{contrast}.
+        
 \end{frame}
 \subsection*{CLAHE}
 
@@ -294,11 +284,9 @@
     \frametitle{Evaluation}
     \begin{itemize}
         
-   
+    \item Only detections containing labels will be considered \textbf{TP}.
     \item If detection contains more than one person it will count as only one detection.
-    \item In the case we would have a massive region we will discharge that detection.
-    \item For checking the dimensionality of the bounding box, we would assume that width or height higher than a third of the image will not be acceptable.
-    \item Regions minuscule will also be discarded.
+    \item Massive or tiny regions will be discarded.
     \item Some labels of the ground truth could be double checked.
 \end{itemize}
 \end{frame}
@@ -312,8 +300,18 @@
     \csvautobooktabular{../metrics.csv}
     %\end{table}
     }
-    \newline \newline \newline
-    MSE = \input{../MSE.txt}
+    %\newline \newline \newline
+    %MSE = \input{../MSE.txt}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Results}
+    \resizebox{\textwidth}{!}{%
+
+    \csvautobooktabular{../metrics_2.csv}
+
+    }
+
 \end{frame}
 
 \section{Outputs}
@@ -326,7 +324,7 @@
     \frametitle{Conclusions}
     \begin{itemize}
         \item Not seeking perfect detection.
-        \item The cast shadows can confuse our algorithm.
+        \item Brusque changes confuse our algorithm (i.e. cast shadows).
         \item Working in color could be not ideal.
         \item The results are really fragile.
     \end{itemize}
