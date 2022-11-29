@@ -5,6 +5,7 @@
 \usepackage{comment}
 \usepackage{csvsimple, booktabs}
 \usepackage{pgffor}%
+\usepackage{transparent}
 
 \usepackage{ifpdf}%
   \ifpdf%
@@ -31,6 +32,7 @@
 ../gen/det/1660316400.jpg,
 ../gen/det/1660291200.jpg
 }%
+
 
 \newcommand{\beamerfigure}[1]{%
   \begin{frame}%
@@ -65,20 +67,49 @@
 \begin{frame}
 
     \frametitle{Objective}
-    \centering
-    Create a crowd counting algorithm.\newline \pause
-
-    We can implement it as we want!\newline \pause
-
-    Now what? Where do we have to start?
+    We need to generate and algorithm capable of \textbf{crowd counting}...\medskip\pause
+    
+    So we need  to :
+    \begin{itemize}
+        
+        \item<2-> Have some kind of ground truth
+        \item<3-> An algorithm to Detect persons
+        \item<4-> And be able to quantify our performance
+    \end{itemize}
 
 \end{frame}
 
 
 \begin{frame}
-    \frametitle{Where do we start}
-    First, we need to label our images and establish some kind of criteria to decide which section to label. 
-     
+    \frametitle{Labeling}
+    First, we need to \textbf{label} our images and establish some kind of \textbf{criteria} to decide which persons to label. 
+\end{frame}
+
+\begin{frame}
+    \frametitle{Occlusions}
+\begin{figure}
+    \centering
+    \includegraphics{lab/oclusion.png}
+\end{figure}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Compact information}
+\begin{figure}
+    \centering
+    \includegraphics{lab/shore.png}
+\end{figure}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Masked areas}
+
+    \centering
+
+    \includegraphics[width=\textwidth,]{../Gelabert/1660287600.jpg}
+    \vspace*{-6.25cm}
+   {\transparent{0.8} \includegraphics[width=\textwidth,]{../mask.png}}
+
 \end{frame}
 
 
